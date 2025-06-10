@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">Ваша корзина</h2>
+    
+    {% if cart %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead class="table-light">
+                    <tr>
+                        <th>Товар</th>
+                        <th class="text-center">Количество</th>
+                        <th class="text-end">Цена</th>
+                        <th class="text-end">Сумма</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    {% if item.image %}
+                                        <img src="{{ item.image }}" style="width: 60px; height: 60px; object-fit: contain;" class="me-3 rounded">
+                                    {% endif %}
+                                    <div>
+                                        <h6 class="mb-1">{{ item.name }}</h6>
+                                        <small class="text-muted">Арт: {{ item.product.id }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <form action="{% url 'cart_add' item.product.id %}" method="post" class="d-flex align-items-center">
+                                        {% csrf_token %}
+                                        <div class="input-group" style="width: 140px;">
+                                            <button type="button" class="btn btn-outline-secondary btn-sm quantity-minus" 
+        data-product-id="{{ item.product.id }}">
+    <i class="fas fa-minus"></i>
+</button>
+<input type="number" name="quantity" value="{{ item.quantity }}" 
+       min="1" max="{{ item.product.stock }}" 
+       class="form-control form-control-sm text-center quantity-input">
+<button type="button" class="btn btn-outline-secondary btn-sm quantity-plus" 
+        data-product-id="{{ item.product.id }}">
+    <i class="fas fa-plus"></i>
+</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </td>
+                            <td class="text-end">{{ item.price }} сом</td>
+                            <td class="text-end">{{ item.total_price }} сом</td>
+                            <td class="text-center">
+                                <a href="{% url 'cart_remove2' item.product.id %}" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot class="table-group-divider">
+                    <tr>
+                        <th colspan="3" class="text-end">Итого:</th>
+                        <th colspan="2" class="text-end">{{ cart.get_total_price }} сом</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center py-3 border-top">
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary mb-2 mb-md-0">
+                <i class="fas fa-arrow-left me-2"></i>Продолжить покупки
+            </a>
+            <a href="{% url 'checkout' %}" class="btn btn-primary">
+                Оформить заказ <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    {% else %}
+        <div  style="margin-bottom: 300px;" class="alert alert-info d-flex align-items-center">
+            <i class="fas fa-shopping-cart me-3 fa-lg"></i>
+            <div>
+                <h5 class="alert-heading">Ваша корзина пуста</h5>
+                <p class="mb-0">Начните покупки в нашем <a href="{% url 'home' %}" class="alert-link">каталоге</a></p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Обработчики для кнопок +/-
+        document.querySelectorAll('.quantity-minus').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                const input = this.nextElementSibling;
+                let quantity = parseInt(input.value);
+                
+                if (quantity > 1) {
+                    input.value = quantity - 1;
+                    updateCart(productId, input.value);
+                } else {
+                    // Если количество становится 0, удаляем товар
+                    removeFromCart(productId);
+                }
+            });
+        });
+    
+        document.querySelectorAll('.quantity-plus').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                const input = this.previousElementSibling;
+                const max = parseInt(input.getAttribute('max'));
+                let quantity = parseInt(input.value);
+                
+                
+                    input.value = quantity + 1;
+                    updateCart(productId, input.value);
+               
+            });
+        });
+    
+        // Функция обновления корзины через AJAX
+        function updateCart(productId, quantity) {
+            fetch(`/cart/add/${productId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `quantity=${quantity}&update_quantity=True`
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Обновляем итоговые значения на странице
+                document.querySelectorAll('.cart-count').forEach(el => {
+                    el.textContent = data.total_items || 0;
+                });
+                document.querySelectorAll('.cart-total-price').forEach(el => {
+                    el.textContent = data.total_price + ' сом';
+                });
+                // Обновляем строку с товаром
+                location.reload(); // или можно сделать более точное обновление
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    
+        // Функция удаления товара
+        function removeFromCart(productId) {
+            fetch(`/cart/remove/${productId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    });
+</script>
+
+<style>
+    @media (max-width: 767.98px) {
+        .table-responsive {
+            border: 0;
+        }
+        
+        .table thead {
+            display: none;
+        }
+        
+        .table tr {
+            display: block;
+            margin-bottom: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+        }
+        
+        .table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: none;
+            padding: 0.5rem 1rem;
+        }
+        
+        .table td:before {
+            content: attr(data-label);
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+        
+        .table td[data-label] {
+            text-align: right;
+            padding-left: 50%;
+            position: relative;
+        }
+        
+        .table td[data-label]:before {
+            position: absolute;
+            left: 1rem;
+            width: calc(50% - 1rem);
+            white-space: nowrap;
+            text-align: left;
+        }
+    }
+    
+    .quantity-minus, .quantity-plus {
+        width: 36px;
+    }
+    
+    .quantity-input {
+        max-width: 50px;
+    }
+    
+    .input-group {
+        flex-wrap: nowrap;
+    }
+</style>
+{% endblock %}

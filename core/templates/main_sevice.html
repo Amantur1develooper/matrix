@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <!-- Заголовок и описание -->
+            <section class="text-center mb-5">
+                <h1 class="mb-3">Сервисный центр Matrix</h1>
+                <p class="lead text-muted">Профессиональный ремонт техники с 2013 года</p>
+                <div class="border-top border-bottom py-3 my-4">
+                    <div class="row">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <i class="fas fa-award fa-2x text-primary me-3"></i>
+                                <div>
+                                    <div class="fw-bold">10+ лет</div>
+                                    <small class="text-muted">успешной работы</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <i class="fas fa-users fa-2x text-primary me-3"></i>
+                                <div>
+                                    <div class="fw-bold">5000+</div>
+                                    <small class="text-muted">довольных клиентов</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <i class="fas fa-tools fa-2x text-primary me-3"></i>
+                                <div>
+                                    <div class="fw-bold">100+</div>
+                                    <small class="text-muted">видов ремонтов</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="mb-4">Наши специалисты с многолетним опытом готовы решить любые проблемы с вашей техникой. Мы постоянно совершенствуем свои навыки, чтобы предлагать клиентам только лучшие сервисные решения.</p>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i> Диагностика <strong>бесплатна</strong> при условии выполнения ремонта у нас
+                </div>
+            </section>
+
+            <!-- Блоки услуг -->
+            <section class="mb-5">
+                <h2 class="text-center mb-4">Наши услуги</h2>
+                <div class="row g-4">
+                    <!-- Ремонт компьютерной техники -->
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <img src="https://example.com/computer-repair.jpg" class="card-img-top" alt="Ремонт компьютеров" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h3 class="h5 card-title">Ремонт компьютерной техники</h3>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-laptop-medical text-primary me-3"></i>
+                                        Ремонт ПК и ноутбуков
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-search text-primary me-3"></i>
+                                        Диагностика неисправностей
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-shield-alt text-primary me-3"></i>
+                                        Профилактика и чистка
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-database text-primary me-3"></i>
+                                        Восстановление данных
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-microchip text-primary me-3"></i>
+                                        Обновление комплектующих
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="#" class="btn btn-primary w-100">Подробнее</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ремонт оргтехники -->
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <img src="https://example.com/printer-repair.jpg" class="card-img-top" alt="Ремонт принтеров" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h3 class="h5 card-title">Ремонт оргтехники</h3>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-print text-primary me-3"></i>
+                                        Ремонт принтеров и МФУ
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-tint text-primary me-3"></i>
+                                        Заправка картриджей
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-tools text-primary me-3"></i>
+                                        Ремонт картриджей
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-search text-primary me-3"></i>
+                                        Диагностика проблем
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-broom text-primary me-3"></i>
+                                        Профилактика устройств
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="#" class="btn btn-primary w-100">Подробнее</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Установка ПО -->
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <img src="https://example.com/software-install.jpg" class="card-img-top" alt="Установка ПО" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h3 class="h5 card-title">Установка и настройка ПО</h3>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fab fa-windows text-primary me-3"></i>
+                                        Установка Windows и Linux
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-shield-virus text-primary me-3"></i>
+                                        Удаление вирусов
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-download text-primary me-3"></i>
+                                        Установка программ
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-cogs text-primary me-3"></i>
+                                        Настройка драйверов
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-desktop text-primary me-3"></i>
+                                        Оптимизация системы
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="#" class="btn btn-primary w-100">Подробнее</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Организация сети -->
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <img src="https://example.com/network-setup.jpg" class="card-img-top" alt="Настройка сети" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h3 class="h5 card-title">Организация локальной сети</h3>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-network-wired text-primary me-3"></i>
+                                        Настройка LAN/Wi-Fi сетей
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-server text-primary me-3"></i>
+                                        Настройка серверов
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-shield-alt text-primary me-3"></i>
+                                        Защита сети
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-wifi text-primary me-3"></i>
+                                        Устранение проблем с Wi-Fi
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-sitemap text-primary me-3"></i>
+                                        Оптимизация сети
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="#" class="btn btn-primary w-100">Подробнее</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Процесс ремонта -->
+            <section class="mb-5">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h2 class="h5 mb-0">Как мы работаем</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-3 mb-4 mb-md-0">
+                                <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-phone-alt fa-2x text-primary"></i>
+                                </div>
+                                <h3 class="h6">1. Заявка</h3>
+                                <p class="small text-muted">Оставьте заявку по телефону или в офисе</p>
+                            </div>
+                            <div class="col-md-3 mb-4 mb-md-0">
+                                <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-search fa-2x text-primary"></i>
+                                </div>
+                                <h3 class="h6">2. Диагностика</h3>
+                                <p class="small text-muted">Бесплатная диагностика при ремонте у нас</p>
+                            </div>
+                            <div class="col-md-3 mb-4 mb-md-0">
+                                <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-tools fa-2x text-primary"></i>
+                                </div>
+                                <h3 class="h6">3. Ремонт</h3>
+                                <p class="small text-muted">Профессиональный ремонт с гарантией</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-check-circle fa-2x text-primary"></i>
+                                </div>
+                                <h3 class="h6">4. Готово</h3>
+                                <p class="small text-muted">Получение техники и оплата</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Важная информация -->
+            <section class="mb-4">
+                <div class="card border-warning border-2">
+                    <div class="card-header bg-warning">
+                        <h2 class="h5 mb-0">Важная информация</h2>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex">
+                                <i class="fas fa-map-marker-alt text-warning mt-1 me-3"></i>
+                                <div>
+                                    <strong>Ремонт в офисе и на выезде</strong><br>
+                                    Не все проблемы можно решить на месте - точную информацию вам сообщит специалист
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex">
+                                <i class="fas fa-file-alt text-warning mt-1 me-3"></i>
+                                <div>
+                                    <strong>Документооборот</strong><br>
+                                    На каждое устройство оформляется акт приема с подробным описанием проблемы
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex">
+                                <i class="fas fa-clock text-warning mt-1 me-3"></i>
+                                <div>
+                                    <strong>Сроки диагностики</strong><br>
+                                    От нескольких минут до нескольких часов в зависимости от сложности
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 10px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    
+    .list-group-item {
+        border-left: 0;
+        border-right: 0;
+        padding: 1rem 1.25rem;
+    }
+    
+    .list-group-item:first-child {
+        border-top: 0;
+    }
+    
+    .list-group-item:last-child {
+        border-bottom: 0;
+    }
+    
+    .border-2 {
+        border-width: 2px !important;
+    }
+</style>
+{% endblock %}

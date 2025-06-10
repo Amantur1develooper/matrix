@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* Network Page Styles */
+.network-hero {
+    background-color: #f5f7fa;
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+    background-image: linear-gradient(to right, #f5f7fa 0%, #e4e8eb 100%);
+}
+
+.network-hero h1 {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.process-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.step {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.step-icon {
+    font-size: 2rem;
+    color: #3498db;
+    margin-bottom: 1rem;
+}
+
+.network-services {
+    padding: 3rem 0;
+    background-color: #f9f9f9;
+}
+
+.service-category h3 .fa-wifi {
+    color: #3498db;
+}
+
+.network-benefits {
+    padding: 3rem 0;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.benefit {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.benefit i {
+    font-size: 2.5rem;
+    color: #3498db;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .process-steps, .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+<div class="network-page">
+    <section class="network-hero">
+        <div class="container">
+            <h1>Организация и обслуживание локальной сети</h1>
+            <p class="lead">Локальная сеть – это компьютерная сеть, которая покрывает небольшую территорию или группу зданий (офис, дом, фирму, школу и т.п.).</p>
+        </div>
+    </section>
+
+    <section class="network-process">
+        <div class="container">
+            <h2>Процесс организации локальной сети</h2>
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-search-location"></i></div>
+                    <h3>Осмотр объекта</h3>
+                    <p>Специалист выезжает на объект, проводит осмотр и составляет начальный план работ</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-project-diagram"></i></div>
+                    <h3>Проектирование</h3>
+                    <p>Оборудование и материалы подбираются с учетом ваших пожеланий</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-file-signature"></i></div>
+                    <h3>Согласование</h3>
+                    <p>Формируется проект и смета, которые выносятся на согласование</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-network-wired"></i></div>
+                    <h3>Монтаж</h3>
+                    <p>После утверждения проекта выполняется монтаж и пуско-наладочные работы</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="network-services">
+        <div class="container">
+            <h2>Обслуживание локальной сети</h2>
+            <div class="service-description">
+                <p>У вас пропала связь с роутером? Или офисный принтер не печатает по сети? А может у вас не получается подключиться к Wi-Fi? Если эти проблемы не решены после звонка вашему провайдеру, то скорее всего у вас неполадки с локальной сетью. Обратитесь к нам!</p>
+            </div>
+
+            <div class="service-category">
+                <h3><i class="fas fa-wifi"></i> Основные услуги</h3>
+                <ul class="service-list">
+                    <li>Установка и настройка Wi-Fi роутера</li>
+                    <li>Ремонт Wi-Fi роутера</li>
+                    <li>Монтаж сетевого кабеля</li>
+                    <li>Настройка локальной сети</li>
+                    <li>Обжим коннектора RG11, RG45</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="network-benefits">
+        <div class="container">
+            <h2>Почему стоит выбрать нас?</h2>
+            <div class="benefits-grid">
+                <div class="benefit">
+                    <i class="fas fa-user-tie"></i>
+                    <h3>Опытные специалисты</h3>
+                    <p>Наши инженеры имеют многолетний опыт работы с сетевым оборудованием</p>
+                </div>
+                <div class="benefit">
+                    <i class="fas fa-tools"></i>
+                    <h3>Современное оборудование</h3>
+                    <p>Используем профессиональные инструменты для монтажа и диагностики</p>
+                </div>
+                <div class="benefit">
+                    <i class="fas fa-headset"></i>
+                    <h3>Техническая поддержка</h3>
+                    <p>Гарантийное и постгарантийное обслуживание вашей сети</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2>Нужна помощь с локальной сетью?</h2>
+            <p>Оставьте заявку и наш специалист свяжется с вами для консультации</p>
+            <a href="{% url 'contacts' %}" class="btn btn-primary">Оставить заявку</a>
+        </div>
+    </section>
+</div>
+{% endblock %}

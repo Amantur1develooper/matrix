@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="software-page">
+    <section class="software-hero">
+        <div class="container">
+            <h1>Установка и настройка ПО</h1>
+            <p class="lead">Программное обеспечение – это, без чего ваш ПК не будет работать, даже если он очень мощный и дорогостоящий.</p>
+            <p>Установка Windows и других операционных систем – главная задача после покупки новенького компьютера. Чтобы все работало исправно, обратитесь в наш сервисный центр за услугой по настройке ПО.</p>
+        </div>
+    </section>
+
+    <section class="software-services">
+        <div class="container">
+            <h2>Наши услуги по установке и настройке ПО</h2>
+            
+            <div class="service-category">
+                <h3><i class="fas fa-windows"></i> Операционные системы</h3>
+                <ul class="service-list">
+                    <li>Установка/переустановка ОС (Windows) с драйверами и стандартным набором программ (антивирус, Microsoft Office, браузер)</li>
+                    <li>Установка ОС (Windows) на иностранном языке (англ, турец, китай и пр.) с драйверами и стандартным набором программ</li>
+                    <li>Установка ОС Windows Server</li>
+                    <li>Восстановление ОС Windows (без переустановки с сохранением всех настроек пользователя и программ)</li>
+                    <li>Активация Microsoft Windows</li>
+                    <li>Сброс паролей</li>
+                </ul>
+            </div>
+
+            <div class="service-category">
+                <h3><i class="fas fa-file-word"></i> Офисные и профессиональные программы</h3>
+                <ul class="service-list">
+                    <li>Установка Microsoft Office</li>
+                    <li>Активация Microsoft Office</li>
+                    <li>Установка дополнительного ПО (Autocad, Archicad, 3ds Max, Corel, Photoshop, Рутокен, 1С и т.п.)</li>
+                    <li>Установка другого ПО с дистрибутива заказчика</li>
+                </ul>
+            </div>
+
+            <div class="service-category">
+                <h3><i class="fas fa-desktop"></i> Настройка системы</h3>
+                <ul class="service-list">
+                    <li>Установка драйвера на ПК/ноутбук</li>
+                    <li>Установка антивирусной программы</li>
+                    <li>Настройка компьютера для выхода в Интернет</li>
+                    <li>Устранение конфликтов ПО, настройка OC</li>
+                    <li>Устранение вирусов, программ автозагрузки</li>
+                    <li>Настройка общей папки</li>
+                    <li>Добавление/удаление языка ввода</li>
+                    <li>Смена языка интерфейса</li>
+                </ul>
+            </div>
+
+            <div class="service-category">
+                <h3><i class="fas fa-envelope"></i> Почта и коммуникации</h3>
+                <ul class="service-list">
+                    <li>Создание и настройка учетной записи почты (Outlook и т.п.) за каждую почту</li>
+                    <li>Установка дополнительного ПО (приложения) (Zoom, Skype, браузеры и т.п.)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2>Нужна помощь с программным обеспечением?</h2>
+            <p>Наши специалисты помогут с установкой и настройкой любого ПО</p>
+            <a href="{% url 'contacts' %}" class="btn btn-primary">Заказать услугу</a>
+        </div>
+    </section>
+</div>
+{% endblock %}

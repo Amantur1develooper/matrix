@@ -1,0 +1,705 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Магазин электроники{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    {% block extra_css %}{% endblock %}
+    <style>
+        /* Общие стили */
+        body {
+           /* Увеличил из-за двухстрочного меню */
+        }
+        
+        /* Первая строка навбара */
+        .top-navbar {
+            background-color:rgb(245, 245, 245);
+            padding: 10px 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+        
+        /* Вторая строка навбара */
+        .main-navbar {
+            background-color:rgb(43, 48, 54);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: white;
+            padding: 12px 15px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: #f8f9fa;
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        /* Поиск */
+        .search-container {
+            position: relative;
+            margin-right: 10px;
+        }
+        
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 0 0 4px 4px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 1000;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .search-results a {
+            display: block;
+            padding: 8px 15px;
+            color: #333;
+            text-decoration: none;
+        }
+        
+        .search-results a:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .search-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .search-item:last-child {
+            border-bottom: none;
+        }
+        
+        .search-item img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+        
+        /* Уведомление о корзине */
+        .cart-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            animation: slideIn 0.3s ease-out;
+            display: none;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .cart-notification i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        /* Контактная кнопка */
+        .fixed-contact-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        
+        .contact-btn {
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .contact-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .contact-popup {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            width: 250px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            transform: translateY(20px);
+        }
+        
+        .contact-popup.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .contact-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .contact-body {
+            padding: 10px;
+        }
+        
+        .contact-item {
+            display: block;
+            padding: 8px 0;
+            color: #333;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .contact-item:hover {
+            color: #0d6efd;
+        }
+        
+        .contact-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Футер */
+        footer {
+            margin-top: 100px;
+            background-color: #343a40;
+            color: white;
+        }
+        
+        /* Мобильное меню */
+        @media (max-width: 991.98px) {
+            body {
+               
+            }
+            .top-navbar{
+                background-color: rgb(52, 58, 64);
+            }
+            .top-navbar .contact-info {
+                display: none;
+               
+            }
+            
+            .main-navbar {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block !important;
+            }
+            
+            .offcanvas {
+                max-width: 80%;
+                background-color: #343a40;
+                color: white;
+            }
+            
+            .offcanvas .nav-link {
+                color: rgba(255,255,255,.8);
+                padding: 12px 16px;
+                border-bottom: 1px solid rgba(255,255,255,.1);
+            }
+            
+            .offcanvas .nav-link:hover {
+                color: white;
+                background-color: rgba(255,255,255,.1);
+            }
+        }
+        
+        /* Десктопное меню */
+        @media (min-width: 992px) {
+            .mobile-menu-btn {
+                display: none !important;
+            }
+        }
+        /* Для Bootstrap 5 */
+.dropdown-submenu {
+    position: relative;
+}
+.dropdown-submenu .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -1px;
+    display: none; /* Скрываем по умолчанию */
+}
+.dropdown-submenu:hover .dropdown-menu,
+.dropdown-submenu .dropdown-toggle.show + .dropdown-menu {
+    display: block; /* Показываем при наведении или активном переключателе */
+}
+
+   
+    
+    </style>
+</head>
+<body>
+   <!-- Первая строка навбара (лого, поиск, контакты) -->
+   <nav class="navbar navbar-expand-lg navbar-wh top-navbar">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}"><img style="height: 80px;" src="{% static 'logo2.png' %}"></a>
+        
+        <!-- Поисковая форма -->
+        <div class="search-container position-relative me-3">
+            <form class="d-flex" action="/" method="get">
+                <input class="form-control me-2" type="text" name="q" id="search-input" 
+                       placeholder="Поиск..." autocomplete="off" value="{{ search_query }}"
+                       aria-label="Поиск товаров">
+                <button class="btn btn-outline-dark" type="submit">Найти</button>
+            </form>
+            <div class="search-results position-absolute w-100" id="search-results"></div>
+        </div>
+        
+        <!-- Контактные данные (только на десктопе) -->
+        <div class="contact-info d-none d-lg-flex text-black">
+            <div class="me-4">
+                <div class="small">
+                    <div><i class="far fa-clock me-1"></i> ПН-ПТ 09:00-18:00</div>
+                    <div><i class="far fa-clock me-1"></i> СБ 09:00-16:00 </div>
+                    <div><i class="far fa-clock me-1"></i> ВС выходной </div>
+              
+
+
+                </div>
+            </div>
+            <div>
+                <div class="small">
+                    <div><i class="fas fa-phone-alt me-1"></i> +996 (552) 66-16-66</div>
+                    <div><i class="fas fa-phone-alt me-1"></i> +996 (552) 66-16-66</div>
+                    <div><i class="fas fa-phone-alt me-1"></i> +996 (552) 66-16-66</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Бургер-кнопка для мобильных -->
+        <button class="navbar-toggler mobile-menu-btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>
+
+<!-- Вторая строка навбара (основное меню с дропдаунами) -->
+<nav class="navbar navbar-expand-lg navbar-dark main-navbar">
+    <div class="container">
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                {% if not category_none %}
+                <!-- Категории с дропдауном -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Категории
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
+                        {% for category in categories %}
+                            {# Проверяем, есть ли у текущей категории дочерние элементы #}
+                            {% if category.children.all %}
+                                <li class="dropdown-submenu dropend"> {# Используем 'dropend' для вложенного меню, выпадающего вправо #}
+                                    <a class="dropdown-item dropdown-toggle" href="{% url 'category' category.slug %}">
+                                        {{ category.name }}
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        {% for child_category in category.children.all %}
+                                            <li><a class="dropdown-item" href="{% url 'category' child_category.slug %}">{{ child_category.name }}</a></li>
+                                            {# Разделитель для дочерних категорий, если нужно #}
+                                            {% if not forloop.last %}<li><hr class="dropdown-divider"></li>{% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            {% else %}
+                                 {% endif %}
+                
+                            {# Разделитель для родительских категорий, если это не последний элемент верхнего уровня #}
+                            {% if not forloop.last %}
+                               
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'sales' %}">Акции</a>
+                </li>
+                
+                <!-- Доставка и оплата с дропдауном -->
+                <li class="nav-item ">
+                    <a class="nav-link" href="{% url 'dostavka_oplata' %}">Доставка и оплата</a>
+             
+                   
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'warranty' %}">Гарантия</a>
+                </li>
+                
+                <!-- Сервис Центр с дропдауном -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="{% url 'main_sevice' %}" id="serviceDropdown" role="button" aria-expanded="false" data-bs-toggle="dropdown">
+                        Сервис Центр
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="serviceDropdown">
+                        <li><a class="dropdown-item" href="{% url 'remontpk' %}">Ремонт компютерной техники</a></li>
+                        <li><a class="dropdown-item" href="{% url 'remonorg' %}">Ремонт оргтехники</a></li>
+                        <li><a class="dropdown-item" href="{% url 'install_settings' %}">Установка и настройка ПО</a></li>
+                        <li><a class="dropdown-item" href="{% url 'org_obsluj' %}">Организация и обслуживание локальной сети</a></li>
+                    </ul>
+                </li>
+                
+                <!-- Услуги с дропдауном -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown">
+                        Услуги
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                        <li><a class="dropdown-item" href="#">Хостинг</a></li>
+                        <li><a class="dropdown-item" href="#">Виртуальный сервер</a></li>
+                        <li><a class="dropdown-item" href="#">Аренда оборудование</a></li>
+                        <li><a class="dropdown-item" href="#">Видеонаблюдение</a></li>
+                        <li><a class="dropdown-item" href="#">Контроль доступа</a></li>
+                    </ul>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about_us' %}">О нас</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'contacts' %}">Контакты</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'cart_detail' %}">Корзина </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Оффканвас меню для мобильных -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+    <div class="offcanvas-header">
+        <a style="text-decoration: none;" href="{% url 'home' %}">
+        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Меню</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </a></div>
+    <div class="offcanvas-body">
+        <ul class="navbar-nav">
+          
+            {% if not category_none %}
+            <!-- Категории с дропдауном -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Категории
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
+                    {% for category in categories %}
+                        {# Проверяем, есть ли у текущей категории дочерние элементы #}
+                        {% if category.children.all %}
+                            <li class="dropdown-submenu dropend"> {# Используем 'dropend' для вложенного меню, выпадающего вправо #}
+                                <a class="dropdown-item dropdown-toggle" href="{% url 'category' category.slug %}">
+                                    {{ category.name }}
+                                </a>
+                                <ul class="dropdown-menu">
+                                    {% for child_category in category.children.all %}
+                                        <li><a class="dropdown-item" href="{% url 'category' child_category.slug %}">{{ child_category.name }}</a></li>
+                                        {# Разделитель для дочерних категорий, если нужно #}
+                                        {% if not forloop.last %}<li><hr class="dropdown-divider"></li>{% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% else %}
+                            {% comment %} <li><a class="dropdown-item" href="{% url 'category' category.slug %}">{{ category.name }}</a></li> {% endcomment %}
+                        {% endif %}
+            
+                        {# Разделитель для родительских категорий, если это не последний элемент верхнего уровня #}
+                        {% if not forloop.last %}
+                           
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'sales' %}">Акции</a>
+            </li>
+            
+            <!-- Доставка и оплата с дропдауном -->
+            <li class="nav-item ">
+                <a class="nav-link" href="{% url 'dostavka_oplata' %}">Доставка и оплата</a>
+         
+               
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'warranty' %}">Гарантия</a>
+            </li>
+            
+            <!-- Сервис Центр с дропдауном -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="{% url 'main_sevice' %}" id="serviceDropdown" role="button" aria-expanded="false" data-bs-toggle="dropdown">
+                    Сервис Центр
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="serviceDropdown">
+                    <li><a class="dropdown-item" href="{% url 'remontpk' %}">Ремонт компютерной техники</a></li>
+                    <li><a class="dropdown-item" href="{% url 'remonorg' %}">Ремонт оргтехники</a></li>
+                    <li><a class="dropdown-item" href="{% url 'install_settings' %}">Установка и настройка ПО</a></li>
+                    <li><a class="dropdown-item" href="{% url 'org_obsluj' %}">Организация и обслуживание локальной сети</a></li>
+                </ul>
+            </li>
+            
+            <!-- Услуги с дропдауном -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown">
+                    Услуги
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                    <li><a class="dropdown-item" href="#">Хостинг</a></li>
+                    <li><a class="dropdown-item" href="#">Виртуальный сервер</a></li>
+                    <li><a class="dropdown-item" href="#">Аренда оборудование</a></li>
+                    <li><a class="dropdown-item" href="#">Видеонаблюдение</a></li>
+                    <li><a class="dropdown-item" href="#">Контроль доступа</a></li>
+                </ul>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'about_us' %}">О нас</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'contacts' %}">Контакты</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'cart_detail' %}">Корзина </a>
+            </li>
+            <!-- Остальные пункты меню с дропдаунами для мобильной версии -->
+            <!-- ... (аналогично десктопной версии) ... -->
+            
+            
+        </ul>
+        
+        <!-- Контактные данные в мобильном меню -->
+        <div class="mt-4">
+            <h6>Режим работы:</h6>
+            <div class="small">
+                <div><i class="far fa-clock me-1"></i> ПН-ПТ 09:00-18:00</div>
+                <div><i class="far fa-clock me-1"></i> СБ 09:00-16:00</div>
+            </div>
+            
+            <h6 class="mt-3">Телефоны:</h6>
+            <div class="small">
+                <div><i class="fas fa-phone-alt me-1"></i> +996 (552) 66-16-66</div>
+                <div><i class="fas fa-phone-alt me-1"></i> +996 (702) 66-16-66</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Уведомление о добавлении в корзину -->
+    <div class="cart-notification" id="cartNotification">
+        <i class="fas fa-check-circle"></i>
+        <span>Товар добавлен в корзину</span>
+    </div>
+    
+    <!-- Основной контент -->
+    <div class="container mt-4">
+        {% block content %}{% endblock %}
+    </div>
+    
+    <!-- Футер -->
+    <footer style="margin-top: 400px;" class="bg-dark text-white mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Контакты</h5>
+                    <p><i class="fas fa-phone-alt me-2"></i> +996 (990) 000 151</p>
+                    <p><i class="fas fa-envelope me-2"></i> mtxkgz@gmail.com</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Политика конфиденциальности</h5>
+                    <p>© 2025 Matrix. Все права защищены.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Фиксированная кнопка контактов -->
+    <div class="fixed-contact-btn">
+        <button class="btn btn-primary rounded-circle contact-btn" id="contactButton">
+            <i class="fas fa-phone"></i>
+        </button>
+        
+        <div class="contact-popup" id="contactPopup">
+            <div class="contact-header">
+                <h5>Свяжитесь с нами</h5>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="contact-body">
+                <a href="tel:+996552661666" target="_blank" class="contact-item">
+                    <i class="fas fa-phone"></i> +996 (552) 66-16-66
+                </a>
+                <a href="tel:+996702661666" target="_blank" class="contact-item">
+                    <i class="fas fa-phone"></i> +996 (702) 66-16-66
+                </a>
+                <a href="tel:++996990000151" target="_blank" class="contact-item">
+                    <i class="fas fa-phone"></i> +996 (990) 000 151
+                </a>
+                <a href="https://t.me/mtx_kg" target="_blank" class="contact-item">
+                    <i class="fab fa-telegram"></i> Telegram
+                </a>
+                <a href="https://wa.me/message/4D6LBKI4WUHRF1" target="_blank" class="contact-item">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </a>
+                <a href="https://www.instagram.com/mtx.kg" target="_blank" class="contact-item">
+                    <i class="fab fa-instagram"></i> Instagram
+                </a>
+                <a href="mailto:mtxkgz@gmail.com" target="_blank" class="contact-item">
+                    <i class="fas fa-envelope"></i> Email
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Скрипты -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.dropdown-submenu > a').forEach(function(el) {
+                el.addEventListener('click', function(e) {
+                    e.preventDefault(); // Предотвращаем переход по ссылке сразу
+                    e.stopPropagation(); // Останавливаем всплытие, чтобы не закрывалось родительское меню
+        
+                    const nextEl = this.nextElementSibling;
+                    if (nextEl && nextEl.classList.contains('dropdown-menu')) {
+                        // Закрываем все другие открытые подменю на том же уровне
+                        el.closest('.dropdown-menu').querySelectorAll('.dropdown-submenu .dropdown-menu.show').forEach(function(openMenu) {
+                            if (openMenu !== nextEl) {
+                                openMenu.classList.remove('show');
+                            }
+                        });
+        
+                        nextEl.classList.toggle('show'); // Переключаем видимость текущего подменю
+                    }
+                });
+            });
+        
+            // Закрытие подменю при клике вне его
+            document.addEventListener('click', function(e) {
+                document.querySelectorAll('.dropdown-submenu .dropdown-menu.show').forEach(function(openMenu) {
+                    if (!openMenu.contains(e.target) && !openMenu.previousElementSibling.contains(e.target)) {
+                        openMenu.classList.remove('show');
+                    }
+                });
+            });
+        });
+        document.getElementById('serviceDropdown').addEventListener('click', function(event) {
+            // Only navigate if the dropdown is NOT being opened/closed
+            // This part can be tricky and might require more advanced Bootstrap event handling
+            // For simplicity, this example just demonstrates a click, but Bootstrap's dropdown
+            // behavior might still interfere.
+            if (!this.classList.contains('show')) { // Check if dropdown is not open
+                window.location.href = this.href;
+            }
+        });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Поиск
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+        let debounceTimer;
+        
+        searchInput.addEventListener('input', function(e) {
+            clearTimeout(debounceTimer);
+            const query = e.target.value.trim();
+            
+            if (query.length < 2) {
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            debounceTimer = setTimeout(() => {
+                fetch(`/?q=${encodeURIComponent(query)}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    searchResults.innerHTML = html;
+                    searchResults.style.display = html.trim() ? 'block' : 'none';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    searchResults.style.display = 'none';
+                });
+            }, 300);
+        });
+        
+        // Закрытие результатов при клике вне поля поиска
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.style.display = 'none';
+            }
+        });
+        
+        // Контактная кнопка
+        const contactBtn = document.getElementById('contactButton');
+        const contactPopup = document.getElementById('contactPopup');
+        const closeBtn = contactPopup.querySelector('.close-btn');
+        
+        contactBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            contactPopup.classList.toggle('show');
+        });
+        
+        closeBtn.addEventListener('click', function() {
+            contactPopup.classList.remove('show');
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!contactPopup.contains(e.target) && e.target !== contactBtn) {
+                contactPopup.classList.remove('show');
+            }
+        });
+        
+        
+    });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

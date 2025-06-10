@@ -1,0 +1,761 @@
+{% extends 'base.html' %}
+{% load math_tags %}
+
+{% block extra_css %}
+<style>
+    /* Категории */
+    .category-menu {
+        position: relative;
+    }
+    
+    .category-item {
+        position: relative;
+        padding: 5px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .category-link {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 15px;
+        color: #333;
+        text-decoration: none;
+        transition: all 0.2s;
+        border-radius: 5px;
+    }
+    
+    .category-link:hover {
+        background-color: #f8f9fa;
+        color: #0d6efd;
+        transform: translateX(3px);
+    }
+    
+    .dropdown-toggle {
+        margin-left: 5px;
+        font-size: 1.2em;
+        color: #6c757d;
+    }
+    
+    .subcategory-popup {
+        display: none;
+        position: absolute;
+        left: 100%;
+        top: 0;
+        min-width: 200px;
+        background: white;
+        border: 1px solid #ddd;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        z-index: 1000;
+        border-radius: 8px;
+        padding: 10px 0;
+        animation: fadeIn 0.2s ease-out;
+    }
+    
+    .subcategory-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .subcategory-list li {
+        padding: 6px 20px;
+    }
+    
+    .subcategory-list a {
+        display: block;
+        color: #555;
+        text-decoration: none;
+        transition: all 0.2s;
+        padding: 3px 0;
+    }
+    
+    .subcategory-list a:hover {
+        color: #0d6efd;
+        padding-left: 5px;
+    }
+
+    /* Карточки товаров */
+    .product-card {
+        transition: all 0.3s ease;
+        border: none;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        height: 100%;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .product-card .card-img-container {
+        padding: 5px;
+        height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .product-card .card-img-top {
+        max-height: 100%;
+        max-width:300px ;
+        object-fit: contain;
+        transition: transform 0.3s;
+    }
+    
+    .product-card:hover .card-img-top {
+        transform: scale(1.05);
+    }
+    
+    .product-card .card-body {
+        padding: 15px;
+        background: white;
+    }
+    
+    .product-card .card-title {
+        font-size: 0.95rem;
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+    
+    .product-card .price {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #d32f2f;
+    }
+    
+    .product-card .btn-cart {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+    
+    .product-card .btn-cart:hover {
+        background-color: #0d6efd !important;
+        transform: scale(1.1);
+    }
+    
+    /* Карусель */
+    .banner-carousel {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+    
+    .banner-carousel .carousel-item img {
+        height: 350px;
+        object-fit: cover;
+    }
+    
+    .carousel-control-prev, .carousel-control-next {
+        width: 40px;
+        height: 40px;
+        background-color: rgba(0,0,0,0.2);
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .banner-carousel:hover .carousel-control-prev,
+    .banner-carousel:hover .carousel-control-next {
+        opacity: 1;
+    }
+    
+    /* Заголовки секций */
+    .section-title {
+        position: relative;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+    
+    .section-title:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 50px;
+        height: 3px;
+        background: linear-gradient(to right, #0d6efd, #6c757d);
+        border-radius: 3px;
+    }
+    
+    /* Анимации */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateX(10px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Карусель */
+.banner-carousel {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.banner-carousel .carousel-item img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    aspect-ratio: 16/9; /* Соотношение сторон */
+}
+
+/* Для мобильных устройств */
+@media (max-width: 768px) {
+    .banner-carousel .carousel-item img {
+        aspect-ratio: 4/3; /* Более квадратное соотношение для мобильных */
+    }
+}
+
+.carousel-control-prev, .carousel-control-next {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.banner-carousel:hover .carousel-control-prev,
+.banner-carousel:hover .carousel-control-next {
+    opacity: 1;
+}
+.carousel-item {
+    transition: transform 0.6s ease-in-out;
+}
+/* Индикаторы для мобильных */
+.carousel-indicators {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.carousel-indicators [data-bs-target] {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(255,255,255,0.5);
+    border: none;
+    transition: all 0.3s;
+}
+
+.carousel-indicators .active {
+    background-color: white;
+    transform: scale(1.2);
+}
+/* Стили для цен и скидок */
+.price-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.original-price {
+    font-size: 0.9rem;
+    color: #6c757d;
+    text-decoration: line-through;
+    margin-right: 5px;
+}
+
+.discounted-price {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: #d32f2f;
+}
+
+.discount-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff5722;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.price-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.discount-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff5722;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.original-price {
+    font-size: 0.9rem;
+    color: #6c757d;
+    text-decoration: line-through;
+}
+
+.discounted-price {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: #d32f2f;
+    position: relative;
+}
+
+.discounted-price::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 100%;
+    height: 2px;
+    background-color: #ffeb3b;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .discounted-price::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+/* Стили для кнопок */
+.btn-like {
+    width: 36px;
+    height: 36px;
+    transition: all 0.2s;
+}
+
+.btn-like:hover, .btn-like.active {
+    color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
+.btn-like.active i {
+    font-weight: 900 !important;
+}
+
+.btn-cart {
+    width: 36px;
+    height: 36px;
+    transition: all 0.2s;
+}
+
+.btn-cart:hover {
+    transform: scale(1.1);
+}
+
+.btn-buy-now {
+    transition: all 0.2s;
+    min-width: 100px;
+}
+
+.btn-buy-now:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3);
+}
+
+/* Адаптивные изменения */
+@media (max-width: 576px) {
+    .btn-buy-now {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        font-size: 0.9rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Сайдбар с категориями -->
+        <div class="col-lg-3 col-md-4">
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="m-0"><i class="fas fa-list-alt me-2"></i>Категории</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-unstyled category-menu p-3">
+                        {% for category in categories %}
+                            <li class="category-item">
+                                <a href="{% url 'category' category.slug %}" class="category-link" data-slug="{{ category.slug }}">
+                                    <span>{{ category.name }}</span>
+                                    {% if category.children.all %}
+                                        <span class="dropdown-toggle">›</span>
+                                    {% endif %}
+                                </a>
+                                {% if category.children.all %}
+                                    <div class="subcategory-popup">
+                                        <ul class="subcategory-list">
+                                            {% for child in category.children.all %}
+                                                <li>
+                                                    <a href="{% url 'category' child.slug %}">
+                                                        <i class="fas fa-angle-right me-2"></i>{{ child.name }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Основной контент -->
+        <div class="col-lg-9 col-md-8">
+            <!-- Карусель баннеров -->
+           <!-- Карусель баннеров -->
+<div id="bannerCarousel" class="carousel slide banner-carousel" data-bs-ride="carousel" data-bs-interval="4000">
+    <div class="carousel-inner">
+        <div class="carousel-indicators">
+            {% for item in karusel %}
+            <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="{{ forloop.counter0 }}" 
+                    {% if forloop.first %}class="active" aria-current="true"{% endif %} 
+                    aria-label="Slide {{ forloop.counter }}"></button>
+            {% endfor %}
+        </div>
+        
+        {% for item in karusel %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            {% if item.url %}
+                <a href="{{ item.url }}" target="_blank" class="d-block">
+                    <img src="{{ item.image.url }}" 
+                         class="d-block w-100" 
+                         alt="{{ item.title|default:'Баннер' }}"
+                         loading="lazy">
+                </a>
+            {% else %}
+                <img src="{{ item.image.url }}" 
+                     class="d-block w-100" 
+                     alt="{{ item.title|default:'Баннер' }}"
+                     loading="lazy">
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+            <!-- Топ товары -->
+            <h2 class="section-title">Топ товары</h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-5">
+                {% for product in top_products %}
+                <div class="col">
+                    <div class="card h-100 product-card">
+                        {% with product.images.all|first as main_image %}
+                        <a href="{{ product.get_absolute_url }}" class="text-decoration-none">
+                            <div class="card-img-container">
+                                {% if main_image %}
+                                <img src="{{ main_image.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                                {% else %}
+                                <div class="text-center text-muted">
+                                    <i class="fas fa-camera fa-3x"></i>
+                                    <p class="small mt-2">Нет изображения</p>
+                                </div>
+                                {% endif %}
+                                {% if product.is_top %}
+                                <span class="position-absolute top-10 start-10 badge bg-warning" style="top: 10px; left: 10px;">
+                                    Топ
+                                </span>
+                                {% endif %}
+                            </div>
+                        </a>
+                        {% endwith %}
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{{ product.get_absolute_url }}" class="text-decoration-none text-dark">
+                                    {{ product.name }}
+                                </a>
+                            </h5>
+                          
+                            <div class="mt-auto">
+                                <div class="d-flex flex-column">
+                                    <div class="price-container mb-2">
+                                        {% if product.skidka_price %}
+                                            <div class="d-flex flex-column">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="text-danger fw-bold fs-5">{{ product.skidka_price }} сом</span>
+                                                    <span class="text-decoration-line-through text-muted small">{{ product.price }} сом</span>
+                                                </div>
+                                            
+                                            </div>
+                                        {% else %}
+                                            <span class="fw-bold fs-5">{{ product.price }} сом</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Группа кнопок -->
+                                    <div class="d-flex justify-content gap-1">
+                                        <!-- Кнопка лайка -->
+                                    
+                                        <!-- Кнопка корзины -->
+                                        <button class="btn btn-primary btn-cart rounded-circle p-2 shadow-sm" 
+                                                onclick="addToCart({{ product.id }})"
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Добавить в корзину">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </button>
+                                        
+                                        <!-- Кнопка быстрой покупки -->
+                                        <!-- <button class="btn btn-success btn-buy-now rounded-pill  shadow-sm"
+                                                onclick="buyNow({{ product.id }})">
+                                            Купить 
+                                        </button> -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                          
+                           
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Все товары -->
+            <h2 class="section-title">Все товары</h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-2 mb-4">
+                {% for product in products %}
+                <div class="col mb-4">
+                    <div class="card h-100 product-card border-0 shadow-sm hover-shadow-lg transition-all">
+                        <!-- Бейдж скидки (если есть) -->
+                        {% if product.skidka_price %}
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <span class="badge bg-danger rounded-pill fs-6 shadow">
+                                -{{ product.price|calculate_discount_percent:product.skidka_price }}%
+                            </span>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Бейдж "Топ" (если есть) -->
+                        {% if product.is_top %}
+                        <div class="position-absolute top-0 start-0 m-2">
+                            <span class="badge bg-warning text-dark rounded-pill fs-6 shadow">
+                                <i class="fas fa-star me-1"></i> Топ
+                            </span>
+                        </div>
+                        {% endif %}
+            
+                        <!-- Изображение товара -->
+                        {% with product.images.all|first as main_image %}
+                        <a href="{{ product.get_absolute_url }}" class="text-decoration-none">
+                            <div class="card-img-container">
+                                {% if main_image %}
+                                <img src="{{ main_image.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                                {% else %}
+                                <div class="text-center text-muted">
+                                    <i class="fas fa-camera fa-3x"></i>
+                                    <p class="small mt-2">Нет изображения</p>
+                                </div>
+                                
+                              
+                                {% endif %}
+                            </div>
+                        </a>
+                        {% endwith %}
+            
+                        <!-- Тело карточки -->
+                        <div class="card-body d-flex flex-column pt-2 pb-3 px-3">
+                            <!-- Название товара -->
+                            <h5 class="card-title mb-2 fs-6 line-clamp-2">
+                                <a href="{{ product.get_absolute_url }}" class="text-decoration-none text-dark hover-primary">
+                                    {{ product.name }}
+                                </a>
+                            </h5>
+            
+                            <!-- Цены -->
+                           
+                            <div class="mt-auto">
+                                <div class="d-flex flex-column">
+                                    <div class="price-container mb-2">
+                                        {% if product.skidka_price %}
+                                            <div class="d-flex flex-column">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="text-danger fw-bold fs-5">{{ product.skidka_price }} сом</span>
+                                                    <span class="text-decoration-line-through text-muted small">{{ product.price }} сом</span>
+                                                </div>
+                                                <small class="text-success">
+                                                    <i class="fas fa-wallet me-1"></i> Экономия {{ product.price|calculate_discount_percent:product.skidka_price }}%
+                                                </small>
+                                            </div>
+                                        {% else %}
+                                            <span class="fw-bold fs-5">{{ product.price }} сом</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Группа кнопок -->
+                                    <div class="d-flex justify-content gap-1">
+                                        <!-- Кнопка лайка -->
+                                    
+                                        <!-- Кнопка корзины -->
+                                        <button class="btn btn-primary btn-cart rounded-circle p-2 shadow-sm" 
+                                                onclick="addToCart({{ product.id }})"
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Добавить в корзину">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </button>
+                                        
+                                        <!-- Кнопка быстрой покупки -->
+                                        <!-- <button class="btn btn-success btn-buy-now rounded-pill  shadow-sm"
+                                                onclick="buyNow({{ product.id }})">
+                                            Купить 
+                                        </button> -->
+                                    </div>
+                                </div>
+                            </div>
+                           
+                          
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Обработка категорий
+    const categoryItems = document.querySelectorAll('.category-item');
+    
+    categoryItems.forEach(item => {
+        const link = item.querySelector('.category-link');
+        const popup = item.querySelector('.subcategory-popup');
+        
+        if (popup) {
+            item.addEventListener('mouseenter', function() {
+                document.querySelectorAll('.subcategory-popup').forEach(p => {
+                    if (p !== popup) p.style.display = 'none';
+                });
+                popup.style.display = 'block';
+            });
+            
+            item.addEventListener('mouseleave', function(e) {
+                setTimeout(() => {
+                    if (!popup.matches(':hover') && !item.contains(document.activeElement)) {
+                        popup.style.display = 'none';
+                    }
+                }, 100);
+            });
+            
+            popup.addEventListener('mouseleave', function() {
+                popup.style.display = 'none';
+            });
+        }
+    });
+
+    // Функция добавления в корзину с анимацией
+    window.addToCart = function(productId) {
+        const btn = event.currentTarget;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        btn.classList.add('disabled');
+        
+        fetch(`/cart/add/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({quantity: 1})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                btn.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-shopping-cart"></i>';
+                    btn.classList.remove('disabled');
+                }, 1000);
+                
+                // Обновляем счетчик корзины в навбаре, если он есть
+                const cartCounter = document.querySelector('.cart-count');
+                if (cartCounter) {
+                    cartCounter.textContent = data.cart_total_items || 0;
+                    cartCounter.classList.add('animate__animated', 'animate__bounceIn');
+                    setTimeout(() => {
+                        cartCounter.classList.remove('animate__animated', 'animate__bounceIn');
+                    }, 1000);
+                }
+            }
+        })
+        .catch(error => {
+            btn.innerHTML = '<i class="fas fa-shopping-cart"></i>';
+            btn.classList.remove('disabled');
+            console.error('Error:', error);
+        });
+    };
+});
+
+// Функция для лайка товара
+function toggleLike(productId) {
+    const btn = event.currentTarget;
+    btn.classList.toggle('active');
+    btn.innerHTML = btn.classList.contains('active') 
+        ? '<i class="fas fa-heart"></i>' 
+        : '<i class="far fa-heart"></i>';
+    
+    // Здесь может быть AJAX запрос к серверу
+    console.log(`Товар ${productId} добавлен в избранное`);
+}
+
+// Функция быстрой покупки
+function buyNow(productId) {
+    addToCart(productId); // Сначала добавляем в корзину
+    // Затем перенаправляем на страницу корзины
+    window.location.href = "{% url 'cart_detail' %}"; // Укажите ваш URL корзины
+}
+
+// Инициализация тултипов
+document.addEventListener('DOMContentLoaded', function() {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+{% endblock %}

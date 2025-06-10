@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="mb-4">Доставка и оплата</h1>
+            
+            <!-- Доставка -->
+            <section class="mb-5">
+                <h2 class="mb-3 border-bottom pb-2">Доставка</h2>
+                
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h3 class="h5 mb-0">Доставка товаров нашим курьером</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-truck me-3 text-primary"></i>
+                                <span>Доставка до 5 км от офиса – <strong>200 сом</strong></span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-truck me-3 text-primary"></i>
+                                <span>Доставка от 5 км до 10 км – <strong>300 сом</strong></span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-truck me-3 text-primary"></i>
+                                <span>Доставка от 10 км – <strong>от 400 сом</strong></span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-clock me-3 text-primary"></i>
+                                <span>Время доставки: <strong>от 30 минут до 6 часов</strong> после заказа</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h3 class="h5 mb-0">Доставка курьерской службой</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-shipping-fast me-3 text-primary"></i>
+                                <span>Доставка через стороннего курьера (Яндекс и др.) – <strong>по тарифам курьера</strong></span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-map-marked-alt me-3 text-primary"></i>
+                                <span>Доставка за пределы Оша и по регионам – <strong>индивидуальный расчет</strong></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-box me-2"></i> Доставка крупногабаритных товаров рассчитывается индивидуально
+                </div>
+            </section>
+            
+            <!-- Оплата -->
+            <section class="mb-5">
+                <h2 class="mb-3 border-bottom pb-2">Оплата</h2>
+                
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h3 class="h5 mb-0">Способы оплаты</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="p-3 border rounded h-100">
+                                    <h4 class="h6 text-primary"><i class="fas fa-money-bill-wave me-2"></i> Наличный расчет</h4>
+                                    <p>Оплата наличными курьеру при получении товара</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="p-3 border rounded h-100">
+                                    <h4 class="h6 text-primary"><i class="fas fa-credit-card me-2"></i> Безналичный расчет</h4>
+                                    <ul class="list-unstyled mb-0">
+                                        <li><i class="fas fa-check text-success me-2"></i> Картой (в офисе)</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Банковский перевод</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> QR-код (мобильные кошельки)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning mt-3">
+                            <i class="fas fa-exclamation-circle me-2"></i> Для товаров под заказ требуется <strong>100% предоплата</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Карта -->
+            <section class="mb-4">
+                <h2 class="mb-3 border-bottom pb-2">Зона доставки</h2>
+                <div class="ratio ratio-16x9 border rounded shadow-sm">
+                    <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A...&amp;source=constructor" 
+                            frameborder="0" allowfullscreen></iframe>
+                </div>
+                <p class="text-muted small mt-2">* Точную стоимость доставки уточняйте у оператора</p>
+            </section>
+        </div>
+    </div>
+</div>
+
+<style>
+    .list-group-item {
+        border-left: 0;
+        border-right: 0;
+        padding: 1rem 1.25rem;
+    }
+    
+    .list-group-item:first-child {
+        border-top: 0;
+    }
+    
+    .list-group-item:last-child {
+        border-bottom: 0;
+    }
+    
+    .card {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        font-weight: 500;
+    }
+    
+    h2, h3 {
+        color: #2c3e50;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,40 @@
+<div class="card h-100 product-card">
+    {% with product.images.first as main_image %}
+        {% if main_image %}
+            <a href="{{ product.get_absolute_url }}">
+                <img src="{{ main_image.image.url }}" class="card-img-top" alt="{{ product.name }}">
+            </a>
+        {% endif %}
+    {% endwith %}
+    <div class="badge-container">
+        <!-- Бейдж "Топ" -->
+        {% if product.is_top %}
+            <span class="badge bg-warning text-dark top-badge">
+                <i class="fas fa-star"></i> Топ
+            </span>
+        {% endif %}
+    
+     
+    </div>
+    
+    <div class="card-body d-flex flex-column">
+        <h5 class="card-title">
+            <a href="{{ product.get_absolute_url }}" class="text-decoration-none text-dark">{{ product.name }}</a>
+        </h5>
+
+        
+        <div class="mt-auto">
+            <p class="card-text text-primary fw-bold">{{ product.price }} KGS</p>
+            
+           
+                <form action="{% url 'cart_add' product.id %}" method="post" class="add-to-cart-form">
+                    {% csrf_token %}
+                    <div class="input-group">
+                       
+                        <button type="submit" class="btn btn-sm btn-primary">В корзину</button>
+                    </div>
+                </form>
+          
+        </div>
+    </div>
+</div>

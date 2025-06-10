@@ -1,0 +1,17 @@
+Новый заказ #{{ order.id }}
+
+Информация о клиенте:
+ФИО: {{ order.full_name }}
+Телефон: {{ order.phone }}
+Email: {{ order.email }}
+Адрес: {{ order.address }}
+{% if order.comments %}Комментарий: {{ order.comments }}{% endif %}
+
+Состав заказа:
+{% for item in cart %}
+- {{ item.product.name }} ({{ item.price }} KGS) x {{ item.quantity }} = {{ item.total_price }} KGS
+{% endfor %}
+
+Итого: {{ cart.get_total_price }} KGS
+
+Дата заказа: {{ order.created_at|date:"d.m.Y H:i" }}

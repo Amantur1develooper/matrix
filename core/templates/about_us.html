@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<style>
+    /* В static/my_app/css/style.css */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    margin: 0; /* Если это основной body */
+    padding: 0; /* Если это основной body */
+}
+
+.about-us-container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.about-us-container header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.about-us-container header img.logo-full {
+    max-width: 350px;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.about-us-container header img.logo-short {
+    max-width: 100px;
+    height: auto;
+    display: block;
+    margin: 10px auto 0;
+}
+
+.about-us-container h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 25px;
+}
+
+.about-us-container p {
+    margin-bottom: 15px;
+}
+.about-us-container p.greeting {
+     font-size: 1.1em;
+}
+
+.about-us-container .company-intro {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+.about-us-container h2 {
+    color: #3498db;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+}
+
+.about-us-container ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.about-us-container ul li {
+    margin-bottom: 8px;
+}
+
+.about-us-container footer {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+    margin-top: 30px;
+    font-size: 0.9em;
+    color: #555;
+}
+</style>
+
+
+    <div class="about-us-container" style="font-family: Arial, sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; line-height: 1.6; color: #333;">
+  
+      <header style="text-align: center; margin-bottom: 30px;">
+        <img style="max-width: 270px;" src="{% static 'matrix_logo.jpeg' %}" alt="Логотип Matrix - Matrix " style="max-width: 350px; height: auto; margin-bottom: 15px;">
+        </header>
+  
+      <h1 style="text-align: center; color: #2c3e50; margin-bottom: 25px;">О нас</h1>
+  
+      <p style="font-size: 1.1em; margin-bottom: 15px;">Приветствуем вас, наши уважаемые покупатели!</p>
+      <p style="margin-bottom: 15px;">Вы в поиске нового <strong>компьютера</strong> или <strong>принтера</strong>? Или вам требуется <strong>оборудовать конференц-зал</strong>? А может вам понадобился <strong>ремонт ноутбука</strong> или <strong>МФУ</strong>?</p>
+      <p style="margin-bottom: 20px;">Всё это и ещё кое-что можем предложить вам мы – компания Matrix .</p>
+  
+      <section class="company-intro" style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+        <p>Основанная в 2012 году, компания регулярно открывает новые направления в работе с покупателями, штат растет, профессиональные навыки улучшаются. Наша команда менеджеров и технических специалистов готова оказать вам качественный сервис по продаже и обслуживанию различного оборудования для дома и офиса. Главное преимущество нашей компании – это многопрофильность: вы можете <strong>обратиться</strong> в Matrix и получить как минимум обширную консультацию по многим направлениям в сфере IT-оборудования и его обслуживания, а как максимум – выполнение задачи в короткий срок и на выгодных условиях.</p>
+      </section>
+  
+      <section class="sales-sphere" style="margin-bottom: 25px;">
+        <h2 style="color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-bottom: 15px;">Сфера продаж компании:</h2>
+        <ul style="list-style-type: disc; padding-left: 20px;">
+          <li style="margin-bottom: 8px;"><strong>ПК</strong> и <strong>периферия</strong> – компьютеры для дома / офиса / предприятия заводской / ручной сборки; компьютерная периферия и аксессуары.</li>
+          <li style="margin-bottom: 8px;"><strong>Ноутбуки</strong> и сопутствующие товары.</li>
+          <li style="margin-bottom: 8px;">Программное обеспечение.</li>
+          <li style="margin-bottom: 8px;"><strong>Оргтехника</strong> – принтеры, МФУ, сканеры и расходные материалы к ним.</li>
+          <li style="margin-bottom: 8px;">Система аудио- и видеоконференцсвязи.</li>
+          <li style="margin-bottom: 8px;">Серверы.</li>
+          <li style="margin-bottom: 8px;"><strong>Сетевое оборудование</strong> – роутеры, коммутаторы, кабели и т. п.</li>
+        </ul>
+      </section>
+  
+      <section class="service-sphere" style="margin-bottom: 25px;">
+        <h2 style="color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-bottom: 15px;">Сфера обслуживания:</h2>
+        <ul style="list-style-type: disc; padding-left: 20px;">
+          <li style="margin-bottom: 8px;"><strong>Ремонт оргтехники</strong> – профилактика и ремонт принтеров, МФУ, сканеров; заправка и ремонт картриджей.</li>
+          <li style="margin-bottom: 8px;"><strong>Ремонт компьютерной техники</strong> – профилактика и ремонт ПК, ноутбуков, серверов, ИБП, мониторов.</li>
+          <li style="margin-bottom: 8px;">Сборка нового ПК, обновление комплектующих в старых ПК.</li>
+          <li style="margin-bottom: 8px;"><strong>Установка и настройка ПО</strong> (программного обеспечения).</li>
+          <li style="margin-bottom: 8px;">Организация и обслуживание локальной сети.</li>
+          <li style="margin-bottom: 8px;"><strong>Аренда оборудования</strong> аудио- и видеоконференцсвязи.</li>
+          <li style="margin-bottom: 8px;"><strong>Хостинг</strong> и <strong>выделенный сервер</strong>.</li>
+          <li style="margin-bottom: 8px;">Установка и обслуживание <strong>видеонаблюдения</strong> и <strong>систем контроля доступа</strong>.</li>
+        </ul>
+      </section>
+  
+      <footer style="border-top: 1px solid #eee; padding-top: 20px; padding-left: 10px; margin-top: 30px; font-size: 0.9em; color: #fff;">
+        <p>Мы открыты к сотрудничеству с розничными покупателями, частными компаниями и государственными учреждениями. Активно участвуем в тендерах и конкурсах на поставку оборудования или на обслуживание компьютерной и оргтехники.</p>
+      </footer>
+  
+    </div>
+  
+    {% endblock %}
+    

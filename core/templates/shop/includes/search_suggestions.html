@@ -1,0 +1,16 @@
+{% if search_results %}
+<ul class="search-suggestions">
+    {% for product in search_results %}
+    <li>
+        <a href="{{ product.get_absolute_url }}">
+            {{ product.name }}
+            <small class="text-muted">${{ product.price }}</small>
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<div class="search-no-results">
+    <p>Товары не найдены. Попробуйте изменить запрос.</p>
+</div>
+{% endif %}

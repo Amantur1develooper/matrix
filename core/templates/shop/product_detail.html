@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+    /* Хлебные крошки */
+    .breadcrumb {
+        background-color: transparent;
+        padding: 0.75rem 0;
+        margin-bottom: 1.5rem;
+    }
+    
+    .breadcrumb-item a {
+        color: #6c757d;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    
+    .breadcrumb-item a:hover {
+        color: #0d6efd;
+    }
+    
+    /* Галерея изображений */
+    .main-image {
+        border: 1px solid #eee;
+        border-radius: 8px;
+        overflow: hidden;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f9f9f9;
+        margin-bottom: 15px;
+    }
+    
+    .main-image img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+    }
+    
+    .thumbnail-container {
+        margin: 0 -5px;
+    }
+    
+    .thumbnail {
+        width: 80px;
+        height: 80px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        overflow: hidden;
+        margin: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f9f9f9;
+        transition: all 0.2s;
+    }
+    
+    .thumbnail:hover {
+        border-color: #0d6efd;
+        transform: translateY(-3px);
+    }
+    
+    .thumbnail img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        cursor: pointer;
+    }
+    
+    /* Информация о товаре */
+    .product-title {
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .price-block {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .current-price {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #d32f2f;
+    }
+    
+    .availability-badge {
+        font-size: 0.9rem;
+        padding: 0.5em 0.8em;
+    }
+    
+    /* Кнопка корзины */
+    .add-to-cart-btn {
+        transition: all 0.2s;
+    }
+    
+    .add-to-cart-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    /* Описание и характеристики */
+    .specs-card {
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .specs-card .card-header {
+        background: #fff;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        font-weight: 600;
+    }
+    
+    .specs-table th {
+        width: 40%;
+        font-weight: 500;
+        color: #6c757d;
+    }
+    
+    /* QR-код */
+    .qr-code-container {
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 15px;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Связанные товары */
+    .related-products-title {
+        position: relative;
+        padding-bottom: 10px;
+        margin: 2rem 0 1.5rem;
+    }
+    
+    .related-products-title:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 50px;
+        height: 3px;
+        background: linear-gradient(to right, #0d6efd, #6c757d);
+        border-radius: 3px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Хлебные крошки -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home"></i> Главная</a></li>
+            {% for crumb in breadcrumbs %}
+                <li class="breadcrumb-item"><a href="{{ crumb.get_absolute_url }}">{{ crumb.name }}</a></li>
+            {% endfor %}
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name|truncatechars:30 }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Галерея изображений -->
+        <div class="col-lg-6">
+            <div class="main-image mb-3">
+                {% if product.images.first %}
+                    <img src="{{ product.images.first.image.url }}" class="img-fluid" alt="{{ product.name }}" id="mainProductImage">
+                {% else %}
+                    <div class="text-center text-muted">
+                        <i class="fas fa-camera fa-4x mb-3"></i>
+                        <p>Нет изображения</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            {% if product.images.count > 1 %}
+            <div class="thumbnail-container">
+                {% for image in product.images.all %}
+                    <div class="thumbnail d-inline-block">
+                        <img src="{{ image.image.url }}" class="img-thumbnail" alt="{{ product.name }}" 
+                             onclick="document.getElementById('mainProductImage').src = this.src;
+                                      document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                                      this.parentElement.classList.add('active');">
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Информация о товаре -->
+        <div class="col-lg-6">
+            <h1 class="product-title">{{ product.name }}</h1>
+            
+            <!-- Категории -->
+            {% if product.categories.exists %}
+                <div class="mb-4">
+                    <span class="text-muted me-2">Категории:</span>
+                    {% for category in product.categories.all %}
+                        <a href="{{ category.get_absolute_url }}" class="badge bg-light text-dark text-decoration-none me-1">
+                            {{ category.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <!-- Цена и наличие -->
+            <div class="price-block mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="current-price">{{ product.price }} KGS</span>
+                    <span class="badge availability-badge bg-success">
+             
+                            <i class="fas fa-check-circle me-1"></i> в наличии
+                       
+                    </span>
+                </div>
+                
+               
+                <form action="{% url 'cart_add' product.id %}" method="post" class="mt-3">
+                    {% csrf_token %}
+                    <div class="input-group" style="max-width: 250px;">
+                        <button type="button" class="btn btn-outline-secondary quantity-btn minus">-</button>
+                        <input type="number" name="quantity" value="1" min="1" max="1000" 
+                               class="form-control text-center quantity-input">
+                        <button type="button" class="btn btn-outline-secondary quantity-btn plus">+</button>
+                        <button type="submit" class="btn btn-primary add-to-cart-btn ms-2">
+                            <i class="fas fa-shopping-cart me-2"></i>В корзину
+                        </button>
+                    </div>
+                </form>
+               
+            </div>
+            
+            <!-- QR-код -->
+            {% if product.qr_code %}
+                <div class="mb-4">
+                    <h5><i class="fas fa-qrcode me-2"></i>QR-код товара</h5>
+                    <div class="qr-code-container">
+                        <img src="{{ product.qr_code.url }}" alt="QR-код" style="height: 100px;">
+                    </div>
+                </div>
+            {% endif %}
+            
+            <!-- Описание -->
+            <div class="mb-4">
+                <h4><i class="fas fa-align-left me-2"></i>Описание</h4>
+                <div class="ps-3">
+                    {{ product.description|linebreaks }}
+                </div>
+            </div>
+            
+          <!-- Характеристики -->
+<div class="card specs-card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-list-alt me-2"></i>Характеристики</h5>
+    </div>
+    <div class="card-body">
+        <table class="table specs-table">
+            <tbody>
+                <tr>
+                    <th scope="row">Артикул</th>
+                    <td>{{ product.id }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Статус</th>
+                    <td>
+                        {% if product.is_top %}
+                            <span class="badge bg-warning text-dark me-2">Топ</span>
+                        {% endif %}
+                       
+                            <span class="badge bg-success">В наличии</span>
+                        
+                    </td>
+                </tr>
+                {% for spec in product.specifications.all %}
+                <tr>
+                    <th scope="row">{{ spec.specification.name }}</th>
+                    <td>{{ spec.value }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+        </div>
+    </div>
+
+    <!-- Связанные товары -->
+    {% if related_products %}
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="related-products-title">С этим товаром покупают</h3>
+                <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+                    {% for related in related_products %}
+                        <div class="col">
+                            {% include 'shop/product_card.html' with product=related %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Обработка кнопок количества
+    const minusBtns = document.querySelectorAll('.quantity-btn.minus');
+    const plusBtns = document.querySelectorAll('.quantity-btn.plus');
+    const quantityInputs = document.querySelectorAll('.quantity-input');
+    
+    minusBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const input = this.nextElementSibling;
+            if (parseInt(input.value) > 1) {
+                input.value = parseInt(input.value) - 1;
+            }
+        });
+    });
+    
+    plusBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const input = this.previousElementSibling;
+            const max = parseInt(input.getAttribute('max'));
+            if (parseInt(input.value) < max) {
+                input.value = parseInt(input.value) + 1;
+            }
+        });
+    });
+    
+    // Выделение первого thumbnail при загрузке
+    const firstThumbnail = document.querySelector('.thumbnail');
+    if (firstThumbnail) {
+        firstThumbnail.classList.add('active');
+    }
+});
+</script>
+{% endblock %}

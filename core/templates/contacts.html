@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <h1 class="text-center mb-5">Контакты</h1>
+            
+            <!-- Основная информация -->
+            <div class="row mb-5">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h2 class="h4 mb-4">Наши принципы работы</h2>
+                            <p>Наши менеджеры всегда готовы помочь в выборе товара, а также подскажут, что будет лучше конкретно для Вас. Наши принципы работы основаны на полной поддержке, понимании и уважении к нашим покупателям.</p>
+                            <p>Мы постоянно исследуем потребности наших клиентов и внедряем новые товары и услуги.</p>
+                            
+                            <div class="mt-4">
+                                <h3 class="h5 mb-3">Режим работы:</h3>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="far fa-clock text-primary me-2"></i> <strong>ПН-ПТ:</strong> 09:00-18:00</li>
+                                    <li class="mb-2"><i class="far fa-clock text-primary me-2"></i> <strong>СБ:</strong> 09:00-16:00</li>
+                                    <li><i class="far fa-clock text-primary me-2"></i> <strong>ВС:</strong> выходной</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h2 class="h4 mb-4">Контактная информация</h2>
+                            
+                            <div class="mb-4">
+                                <h3 class="h5 mb-3"><i class="fas fa-map-marker-alt text-primary me-2"></i> Адрес:</h3>
+                                <p>Кыргызстан, г. Ош,<br>
+                                ул. Ленина 302<br>
+                                (пер. ул. Юсупа Абдрахманова)</p>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h3 class="h5 mb-3"><i class="fas fa-phone-alt text-primary me-2"></i> Телефоны:</h3>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">+996 (552) 66-16-66</li>
+                                    <li class="mb-2">+996 (702) 66-16-66</li>
+                                    <li class="mb-2">+996 (312) 66-16-66</li>
+                                    <li>+996 (770) 55-44-90</li>
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <h3 class="h5 mb-3"><i class="fas fa-envelope text-primary me-2"></i> E-mail:</h3>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><strong>Розничные продажи:</strong> sales@wizard.kg</li>
+                                    <li><strong>Корпоративные продажи:</strong> info@wizard.kg</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Форма обратной связи -->
+            <div class="card border-0 shadow-sm mb-5">
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <h2 class="h4 mb-4">У Вас есть вопросы и предложения?</h2>
+                            <p class="mb-4">Отправьте сообщение и мы свяжемся с вами!</p>
+                            
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">ФИО</label>
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Номер телефона</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="message" class="form-label">Сообщение</label>
+                                    <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Отправить сообщение</button>
+                            </form>
+                        </div>
+                        
+                        <div class="col-lg-6 mt-4 mt-lg-0">
+                            <div class="h-100 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
+                                <h5>Наш адрес: Ош, ул. Ленина, 302</h5>
+                                <iframe 
+                                    src="https://yandex.com/map-widget/v1/?ll=72.801401%2C40.522444&z=18&mode=search&text=Ош%2C%20ул.%20Ленина%2C%20302" 
+                                    width="100%" 
+                                    height="100%" 
+                                    frameborder="0" 
+                                    style="min-height: 300px; border-radius: 8px;">
+                                </iframe>
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Дополнительная информация -->
+            <div class="alert alert-info">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-info-circle fa-2x me-3"></i>
+                    <div>
+                        <h3 class="h5 mb-2">Мы всегда на связи!</h3>
+                        <p class="mb-0">Наши менеджеры ответят на все ваши вопросы и помогут с выбором товара. Не стесняйтесь обращаться к нам любым удобным способом.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 10px;
+    }
+    
+    .form-control {
+        border-radius: 8px;
+        padding: 10px 15px;
+    }
+    
+    textarea.form-control {
+        min-height: 120px;
+    }
+    
+    .btn-primary {
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-weight: 500;
+    }
+    
+    iframe {
+        border: none;
+    }
+</style>
+{% endblock %}
