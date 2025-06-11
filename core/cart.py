@@ -62,7 +62,7 @@ class Cart:
             item = item.copy()
             product = product_map.get(product_id)
             if product:
-                item['product_id'] = product.id
+                item['product_id'] = product_id
                 item['price'] = Decimal(item['price'])
                 item['total_price'] = item['price'] * item['quantity']
                 yield item

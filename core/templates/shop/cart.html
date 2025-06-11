@@ -32,7 +32,7 @@
                             </td>
                             <td>
                                 <div class="d-flex justify-content-center">
-                                    <form action="{% url 'cart_add' item.product_id %}" method="post" class="d-flex align-items-center">
+                                    <form action="{% url 'cart_add' item.product_id|default:'0' %}" method="post" class="d-flex align-items-center">
                                         {% csrf_token %}
                                         <div class="input-group" style="width: 140px;">
                                             <button type="button" class="btn btn-outline-secondary btn-sm quantity-minus" 
