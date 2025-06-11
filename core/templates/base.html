@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="ru">
@@ -12,13 +11,23 @@
     <style>
         /* Общие стили */
         body {
-           /* Увеличил из-за двухстрочного меню */
+            background-color: white;
+            padding-top: 0;
         }
-        
+        .logo2{
+            display: none;
+        }
+        /* Показываем только при ширине экрана от 999 пикселей */
+@media (min-width: 992px) {
+    .logo2 {
+        display: block; /* или inline-block, flex и т.д. — зависит от нужного поведения */
+    }
+}
         /* Первая строка навбара */
         .top-navbar {
-            background-color:rgb(245, 245, 245);
+            background-color: white;
             padding: 10px 0;
+            border-bottom: 1px solid #eee;
         }
         
         .navbar-brand {
@@ -28,7 +37,7 @@
         
         /* Вторая строка навбара */
         .main-navbar {
-            background-color:rgb(43, 48, 54);
+            background-color: #28156f;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
@@ -201,21 +210,42 @@
         /* Футер */
         footer {
             margin-top: 100px;
-            background-color: #343a40;
+            background-color: #28156f;
             color: white;
         }
         
         /* Мобильное меню */
         @media (max-width: 991.98px) {
-            body {
-               
+            .top-navbar {
+                background-color: white;
+                padding: 10px 0;
             }
-            .top-navbar{
-                background-color: rgb(52, 58, 64);
+          
+            .top-navbar .container {
+                flex-wrap: wrap;
+                justify-content: center;
             }
+            
+            .navbar-brand {
+                order: 1;
+                width: 100%;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            
+            .search-container {
+                order: 2;
+                flex-grow: 1;
+                margin: 0 10px;
+            }
+            
+            .mobile-menu-btn {
+                order: 3;
+                margin-left: auto;
+            }
+            
             .top-navbar .contact-info {
                 display: none;
-               
             }
             
             .main-navbar {
@@ -242,6 +272,19 @@
                 color: white;
                 background-color: rgba(255,255,255,.1);
             }
+            
+            /* Улучшенный поиск для мобильных */
+            .search-container form {
+                display: flex;
+            }
+            
+            .search-container input {
+                flex-grow: 1;
+            }
+            
+            .search-container button {
+                white-space: nowrap;
+            }
         }
         
         /* Десктопное меню */
@@ -250,33 +293,57 @@
                 display: none !important;
             }
         }
+       
         /* Для Bootstrap 5 */
-.dropdown-submenu {
-    position: relative;
-}
-.dropdown-submenu .dropdown-menu {
-    top: 0;
-    left: 100%;
-    margin-top: -1px;
-    display: none; /* Скрываем по умолчанию */
-}
-.dropdown-submenu:hover .dropdown-menu,
-.dropdown-submenu .dropdown-toggle.show + .dropdown-menu {
-    display: block; /* Показываем при наведении или активном переключателе */
-}
+        .dropdown-submenu {
+            position: relative;
+        }
+        .dropdown-submenu .dropdown-menu {
+            top: 0;
+            left: 100%;
+            margin-top: -1px;
+            display: none; /* Скрываем по умолчанию */
+        }
+        .dropdown-submenu:hover .dropdown-menu,
+        .dropdown-submenu .dropdown-toggle.show + .dropdown-menu {
+            display: block; /* Показываем при наведении или активном переключателе */
+        }
 
-   
-    
+        @media (max-width: 387px) {
+            .custom-header-mobile {
+                flex-wrap: nowrap;
+            }
+        
+            .custom-header-mobile .navbar-brand img {
+                width: 90px; /* чуть меньше, чтобы влез */
+            }
+        
+            .custom-header-mobile .navbar-toggler {
+                margin-left: auto;
+            }
+        }
+        
     </style>
 </head>
 <body>
    <!-- Первая строка навбара (лого, поиск, контакты) -->
-   <nav class="navbar navbar-expand-lg navbar-wh top-navbar">
+   <nav class="navbar navbar-expand-lg navbar-light top-navbar">
     <div class="container">
-        <a class="navbar-brand" href="{% url 'home' %}"><img style="height: 80px;" src="{% static 'logo2.png' %}"></a>
+        <!-- Логотип по центру для мобильных -->
+        <a class="navbar-brand logo2 m-0" href="{% url 'home' %}">
+            <img style="height: 50px; width: 100px;" src="{% static '/imgg/logo2.png' %}" alt="Логотип">
+        </a>
+        <div class="d-flex align-items-center justify-content-between w-100 d-lg-none flex-nowrap custom-header-mobile">
+            <a class="navbar-brand m-0" href="{% url 'home' %}">
+                <img style="height: 50px; width: 100px;" src="{% static '/imgg/logo2.png' %}" alt="Логотип">
+            </a>
+            <button class="navbar-toggler mobile-menu-btn" style="margin-right: 10px;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
         
         <!-- Поисковая форма -->
-        <div class="search-container position-relative me-3">
+        <div class="search-container position-relative">
             <form class="d-flex" action="/" method="get">
                 <input class="form-control me-2" type="text" name="q" id="search-input" 
                        placeholder="Поиск..." autocomplete="off" value="{{ search_query }}"
@@ -287,15 +354,12 @@
         </div>
         
         <!-- Контактные данные (только на десктопе) -->
-        <div class="contact-info d-none d-lg-flex text-black">
+        <div class="contact-info d-none d-lg-flex">
             <div class="me-4">
                 <div class="small">
                     <div><i class="far fa-clock me-1"></i> ПН-ПТ 09:00-18:00</div>
-                    <div><i class="far fa-clock me-1"></i> СБ 09:00-16:00 </div>
-                    <div><i class="far fa-clock me-1"></i> ВС выходной </div>
-              
-
-
+                    <div><i class="far fa-clock me-1"></i> СБ 09:00-16:00</div>
+                    <div><i class="far fa-clock me-1"></i> ВС выходной</div>
                 </div>
             </div>
             <div>
@@ -308,9 +372,8 @@
         </div>
         
         <!-- Бургер-кнопка для мобильных -->
-        <button class="navbar-toggler mobile-menu-btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        
+       
     </div>
 </nav>
 
@@ -322,31 +385,26 @@
                 {% if not category_none %}
                 <!-- Категории с дропдауном -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link  dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Категории
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
                         {% for category in categories %}
-                            {# Проверяем, есть ли у текущей категории дочерние элементы #}
                             {% if category.children.all %}
-                                <li class="dropdown-submenu dropend"> {# Используем 'dropend' для вложенного меню, выпадающего вправо #}
+                                <li class="dropdown-submenu dropend">
                                     <a class="dropdown-item dropdown-toggle" href="{% url 'category' category.slug %}">
                                         {{ category.name }}
                                     </a>
                                     <ul class="dropdown-menu">
                                         {% for child_category in category.children.all %}
                                             <li><a class="dropdown-item" href="{% url 'category' child_category.slug %}">{{ child_category.name }}</a></li>
-                                            {# Разделитель для дочерних категорий, если нужно #}
                                             {% if not forloop.last %}<li><hr class="dropdown-divider"></li>{% endif %}
                                         {% endfor %}
                                     </ul>
                                 </li>
-                            {% else %}
-                                 {% endif %}
+                            {% endif %}
                 
-                            {# Разделитель для родительских категорий, если это не последний элемент верхнего уровня #}
                             {% if not forloop.last %}
-                               
                             {% endif %}
                         {% endfor %}
                     </ul>
@@ -356,18 +414,14 @@
                     <a class="nav-link" href="{% url 'sales' %}">Акции</a>
                 </li>
                 
-                <!-- Доставка и оплата с дропдауном -->
-                <li class="nav-item ">
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'dostavka_oplata' %}">Доставка и оплата</a>
-             
-                   
                 </li>
                 
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'warranty' %}">Гарантия</a>
                 </li>
                 
-                <!-- Сервис Центр с дропдауном -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="{% url 'main_sevice' %}" id="serviceDropdown" role="button" aria-expanded="false" data-bs-toggle="dropdown">
                         Сервис Центр
@@ -380,7 +434,6 @@
                     </ul>
                 </li>
                 
-                <!-- Услуги с дропдауном -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown">
                         Услуги
@@ -403,7 +456,7 @@
                 </li>
                 
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'cart_detail' %}">Корзина </a>
+                    <a class="nav-link" href="{% url 'cart_detail' %}">Корзина</a>
                 </li>
             </ul>
         </div>
@@ -414,41 +467,31 @@
 <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
     <div class="offcanvas-header">
         <a style="text-decoration: none;" href="{% url 'home' %}">
-        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Меню</h5>
+            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Меню</h5>
+        </a>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </a></div>
+    </div>
     <div class="offcanvas-body">
         <ul class="navbar-nav">
-          
             {% if not category_none %}
-            <!-- Категории с дропдауном -->
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Категории
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
                     {% for category in categories %}
-                        {# Проверяем, есть ли у текущей категории дочерние элементы #}
                         {% if category.children.all %}
-                            <li class="dropdown-submenu dropend"> {# Используем 'dropend' для вложенного меню, выпадающего вправо #}
+                            <li class="dropdown-submenu dropend">
                                 <a class="dropdown-item dropdown-toggle" href="{% url 'category' category.slug %}">
                                     {{ category.name }}
                                 </a>
                                 <ul class="dropdown-menu">
                                     {% for child_category in category.children.all %}
                                         <li><a class="dropdown-item" href="{% url 'category' child_category.slug %}">{{ child_category.name }}</a></li>
-                                        {# Разделитель для дочерних категорий, если нужно #}
                                         {% if not forloop.last %}<li><hr class="dropdown-divider"></li>{% endif %}
                                     {% endfor %}
                                 </ul>
                             </li>
-                        {% else %}
-                            {% comment %} <li><a class="dropdown-item" href="{% url 'category' category.slug %}">{{ category.name }}</a></li> {% endcomment %}
-                        {% endif %}
-            
-                        {# Разделитель для родительских категорий, если это не последний элемент верхнего уровня #}
-                        {% if not forloop.last %}
-                           
                         {% endif %}
                     {% endfor %}
                 </ul>
@@ -457,19 +500,12 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'sales' %}">Акции</a>
             </li>
-            
-            <!-- Доставка и оплата с дропдауном -->
-            <li class="nav-item ">
+            <li class="nav-item">
                 <a class="nav-link" href="{% url 'dostavka_oplata' %}">Доставка и оплата</a>
-         
-               
             </li>
-            
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'warranty' %}">Гарантия</a>
             </li>
-            
-            <!-- Сервис Центр с дропдауном -->
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="{% url 'main_sevice' %}" id="serviceDropdown" role="button" aria-expanded="false" data-bs-toggle="dropdown">
                     Сервис Центр
@@ -481,8 +517,6 @@
                     <li><a class="dropdown-item" href="{% url 'org_obsluj' %}">Организация и обслуживание локальной сети</a></li>
                 </ul>
             </li>
-            
-            <!-- Услуги с дропдауном -->
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown">
                     Услуги
@@ -495,22 +529,15 @@
                     <li><a class="dropdown-item" href="#">Контроль доступа</a></li>
                 </ul>
             </li>
-            
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'about_us' %}">О нас</a>
             </li>
-            
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'contacts' %}">Контакты</a>
             </li>
-            
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'cart_detail' %}">Корзина </a>
+                <a class="nav-link" href="{% url 'cart_detail' %}">Корзина</a>
             </li>
-            <!-- Остальные пункты меню с дропдаунами для мобильной версии -->
-            <!-- ... (аналогично десктопной версии) ... -->
-            
-            
         </ul>
         
         <!-- Контактные данные в мобильном меню -->
@@ -542,7 +569,7 @@
     </div>
     
     <!-- Футер -->
-    <footer style="margin-top: 400px;" class="bg-dark text-white mt-5 py-4">
+    <footer class="bg-dark text-white mt-5 py-4">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
@@ -601,24 +628,22 @@
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.dropdown-submenu > a').forEach(function(el) {
                 el.addEventListener('click', function(e) {
-                    e.preventDefault(); // Предотвращаем переход по ссылке сразу
-                    e.stopPropagation(); // Останавливаем всплытие, чтобы не закрывалось родительское меню
+                    e.preventDefault();
+                    e.stopPropagation();
         
                     const nextEl = this.nextElementSibling;
                     if (nextEl && nextEl.classList.contains('dropdown-menu')) {
-                        // Закрываем все другие открытые подменю на том же уровне
                         el.closest('.dropdown-menu').querySelectorAll('.dropdown-submenu .dropdown-menu.show').forEach(function(openMenu) {
                             if (openMenu !== nextEl) {
                                 openMenu.classList.remove('show');
                             }
                         });
         
-                        nextEl.classList.toggle('show'); // Переключаем видимость текущего подменю
+                        nextEl.classList.toggle('show');
                     }
                 });
             });
         
-            // Закрытие подменю при клике вне его
             document.addEventListener('click', function(e) {
                 document.querySelectorAll('.dropdown-submenu .dropdown-menu.show').forEach(function(openMenu) {
                     if (!openMenu.contains(e.target) && !openMenu.previousElementSibling.contains(e.target)) {
@@ -627,77 +652,72 @@
                 });
             });
         });
+        
         document.getElementById('serviceDropdown').addEventListener('click', function(event) {
-            // Only navigate if the dropdown is NOT being opened/closed
-            // This part can be tricky and might require more advanced Bootstrap event handling
-            // For simplicity, this example just demonstrates a click, but Bootstrap's dropdown
-            // behavior might still interfere.
-            if (!this.classList.contains('show')) { // Check if dropdown is not open
+            if (!this.classList.contains('show')) {
                 window.location.href = this.href;
             }
         });
-    document.addEventListener('DOMContentLoaded', function() {
-        // Поиск
-        const searchInput = document.getElementById('search-input');
-        const searchResults = document.getElementById('search-results');
-        let debounceTimer;
         
-        searchInput.addEventListener('input', function(e) {
-            clearTimeout(debounceTimer);
-            const query = e.target.value.trim();
+        document.addEventListener('DOMContentLoaded', function() {
+            // Поиск
+            const searchInput = document.getElementById('search-input');
+            const searchResults = document.getElementById('search-results');
+            let debounceTimer;
             
-            if (query.length < 2) {
-                searchResults.style.display = 'none';
-                return;
-            }
-            
-            debounceTimer = setTimeout(() => {
-                fetch(`/?q=${encodeURIComponent(query)}`, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.text())
-                .then(html => {
-                    searchResults.innerHTML = html;
-                    searchResults.style.display = html.trim() ? 'block' : 'none';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
+            searchInput.addEventListener('input', function(e) {
+                clearTimeout(debounceTimer);
+                const query = e.target.value.trim();
+                
+                if (query.length < 2) {
                     searchResults.style.display = 'none';
-                });
-            }, 300);
-        });
-        
-        // Закрытие результатов при клике вне поля поиска
-        document.addEventListener('click', function(e) {
-            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-                searchResults.style.display = 'none';
-            }
-        });
-        
-        // Контактная кнопка
-        const contactBtn = document.getElementById('contactButton');
-        const contactPopup = document.getElementById('contactPopup');
-        const closeBtn = contactPopup.querySelector('.close-btn');
-        
-        contactBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            contactPopup.classList.toggle('show');
-        });
-        
-        closeBtn.addEventListener('click', function() {
-            contactPopup.classList.remove('show');
-        });
-        
-        document.addEventListener('click', function(e) {
-            if (!contactPopup.contains(e.target) && e.target !== contactBtn) {
+                    return;
+                }
+                
+                debounceTimer = setTimeout(() => {
+                    fetch(`/?q=${encodeURIComponent(query)}`, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        searchResults.innerHTML = html;
+                        searchResults.style.display = html.trim() ? 'block' : 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        searchResults.style.display = 'none';
+                    });
+                }, 300);
+            });
+            
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                    searchResults.style.display = 'none';
+                }
+            });
+            
+            // Контактная кнопка
+            const contactBtn = document.getElementById('contactButton');
+            const contactPopup = document.getElementById('contactPopup');
+            const closeBtn = contactPopup.querySelector('.close-btn');
+            
+            contactBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                contactPopup.classList.toggle('show');
+            });
+            
+            closeBtn.addEventListener('click', function() {
                 contactPopup.classList.remove('show');
-            }
+            });
+            
+            document.addEventListener('click', function(e) {
+                if (!contactPopup.contains(e.target) && e.target !== contactBtn) {
+                    contactPopup.classList.remove('show');
+                }
+            });
         });
-        
-        
-    });
     </script>
     
     {% block extra_js %}{% endblock %}
