@@ -19,11 +19,11 @@ class Cart:
         if product_id not in self.cart:
             self.cart[product_id] = {
                 'quantity': 0,
-    'price': str(price),
-    'name': product.name,
-    'image': product.images.first().image.url if product.images.exists() else '',
-    'product_id': product.id,  # Добавляем ID продукта
-    }
+                'price': str(price),
+                'name': product.name,
+                'image': product.images.first().image.url if product.images.exists() else '',
+                'product_id': product_id,  # Добавляем ID продукта
+                }
         
         if update_quantity:
             self.cart[product_id]['quantity'] = quantity
