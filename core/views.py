@@ -41,6 +41,8 @@ def send_email_task(subject, message, recipient_list):
 from django.db.models import Q
 
 def dostavka_oplata(request):
+    cart = Cart(request)
+    cart.clear()
     return render(request, 'dostavka_oplata.html',{"categories": categories,})
 
 def warranty(request):
@@ -316,23 +318,77 @@ def cart_detail(request):
 #     cart = Cart(request)
 #     categories = Category.objects.all()
 #     return render(request, 'shop/cart.html', {'cart': cart, 'categories': categories})
-
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 def cart_add(request, product_id):
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
-    quantity = int(request.POST.get('quantity', 1))
     
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        # AJAX запрос
-        cart.add(product, quantity, update_quantity=True)
-        return JsonResponse({
-            'success': True,
-            'total_price': cart.get_total_price(),
-            'quantity': sum(item['quantity'] for item in cart)
-        })
+    if request.method == 'POST':
+        try:
+            quantity = int(request.POST.get('quantity', 1))
+            update_quantity = request.POST.get('update_quantity') == 'true'
+            
+            cart.add(
+                product=product,
+                quantity=quantity,
+                update_quantity=update_quantity
+            )
+            
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'success',
+                    'total_items': cart.__len__(),
+                    'total_price': str(cart.get_total_price()),
+                    'item_price': str(product.price),  # Добавляем цену товара
+                })
+            
+            return redirect('cart_detail')
+            
+        except Exception as e:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'error',
+                    'message': str(e)
+                }, status=500)
+            raise
+# def cart_add(request, product_id):
+#     cart = Cart(request)
+#     product = get_object_or_404(Product, id=product_id)
     
-    cart.add(product, quantity)
-    return redirect('cart_detail')
+#     if request.method == 'POST':
+#         form = CartAddProductForm(request.POST)
+#         if form.is_valid():
+#             cd = form.cleaned_data
+#             cart.add(
+#                 product=product,
+#                 quantity=cd['quantity'],
+#                 update_quantity=cd['update']
+#             )
+            
+#             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+#                 return JsonResponse({
+#                     'total_items': cart.__len__(),
+#                     'total_price': str(cart.get_total_price())
+#                 })
+#     return redirect('cart_detail')
+
+# def cart_add(request, product_id):
+#     cart = Cart(request)
+#     product = get_object_or_404(Product, id=product_id)
+#     quantity = int(request.POST.get('quantity', 1))
+    
+#     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+#         # AJAX запрос
+#         cart.add(product, quantity, update_quantity=True)
+#         return JsonResponse({
+#             'success': True,
+#             'total_price': cart.get_total_price(),
+#             'quantity': sum(item['quantity'] for item in cart)
+#         })
+    
+#     cart.add(product, quantity)
+#     return redirect('cart_detail')
 
 def cart_remove2(request, product_id):
     cart = Cart(request)
@@ -375,8 +431,6 @@ from .models import Product
 #     carts = Category.objects.all()
 #     return render(request, 'shop/cart.html', {'categories':carts,'cart': cart})
 
-
-
 def checkout(request):
     cart = Cart(request)
     
@@ -385,7 +439,6 @@ def checkout(request):
         if form.is_valid() and cart:
             order = form.save(commit=False)
             
-            # Если пользователь авторизован
             if request.user.is_authenticated:
                 order.user = request.user
             
@@ -394,22 +447,19 @@ def checkout(request):
             
             # Сохраняем товары заказа
             for item in cart:
+                product = Product.objects.get(id=item['product_id'])  # Получаем продукт по ID
                 OrderItem.objects.create(
                     order=order,
-                    product=item['product'],
+                    product=product,
                     price=item['price'],
                     quantity=item['quantity']
                 )
             
-            # Отправка email
             send_order_email(order, cart)
-            
-            # Очистка корзины
             cart.clear()
             
-            return render(request, 'shop/order_created.html', {'order': order,"categories": categories,})
+            return render(request, 'shop/order_created.html', {'order': order, "categories": categories})
     else:
-        # Предзаполняем email для авторизованных пользователей
         initial = {}
         if request.user.is_authenticated:
             initial = {

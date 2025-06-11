@@ -1,11 +1,8 @@
 from decimal import Decimal
 from django.conf import settings
-# core/cart.py
 from core.models import Product
-from decimal import Decimal
 import json
 from django.core.serializers.json import DjangoJSONEncoder
-
 
 class Cart:
     def __init__(self, request):
@@ -22,10 +19,11 @@ class Cart:
         if product_id not in self.cart:
             self.cart[product_id] = {
                 'quantity': 0,
-                'price':str(price),
-                'name': product.name,
-                'image': product.images.first().image.url if product.images.exists() else ''
-            }
+    'price': str(price),
+    'name': product.name,
+    'image': product.images.first().image.url if product.images.exists() else '',
+    'product_id': product.id,  # Добавляем ID продукта
+    }
         
         if update_quantity:
             self.cart[product_id]['quantity'] = quantity
@@ -35,10 +33,18 @@ class Cart:
         self.save()
 
     def save(self):
-        # Используем специальный JSON-сериализатор Django
-        self.session[settings.CART_SESSION_ID] = json.loads(
-            json.dumps(self.cart, cls=DjangoJSONEncoder)
-        )
+    # Преобразуем Decimal в строку для сериализации
+        cart_to_save = {}
+        for product_id, item in self.cart.items():
+            cart_to_save[product_id] = {
+            'quantity': item['quantity'],
+            'price': str(item['price']),  # Decimal -> str
+            'name': item['name'],
+            'image': item.get('image', ''),
+            'product_id': item['product_id']
+        }
+    
+        self.session[settings.CART_SESSION_ID] = cart_to_save
         self.session.modified = True
 
     def remove(self, product):
@@ -50,31 +56,26 @@ class Cart:
     def __iter__(self):
         product_ids = self.cart.keys()
         products = Product.objects.filter(id__in=product_ids)
-        cart = self.cart.copy()
-        
-        for product in products:
-            cart[str(product.id)]['product'] = product
-            
-        for item in cart.values():
-            item['price'] = Decimal(item['price'])  # Конвертируем обратно в Decimal
-            item['total_price'] = item['price'] * item['quantity']
-            yield item
-
+        product_map = {str(product.id): product for product in products}
+    
+        for product_id, item in self.cart.items():
+            item = item.copy()
+            product = product_map.get(product_id)
+            if product:
+                item['product_id'] = product.id
+                item['price'] = Decimal(item['price'])
+                item['total_price'] = item['price'] * item['quantity']
+                yield item
 
     def __len__(self):
         return sum(item['quantity'] for item in self.cart.values())
 
     def get_total_price(self):
         return sum(Decimal(item['price']) * item['quantity'] for item in self.cart.values())
-   
-        
-        if update_quantity:
-            self.cart[product_id]['quantity'] = quantity
-        else:
-            self.cart[product_id]['quantity'] += quantity
-            
-        self.save()
-        return self.cart[product_id]['quantity']
+
     def clear(self):
-        del self.session[settings.CART_SESSION_ID]
-        self.save()
+        """Полностью очищает корзину из сессии"""
+        if settings.CART_SESSION_ID in self.session:
+            del self.session[settings.CART_SESSION_ID]
+            self.session.modified = True  # Важно пометить сессию как измененную
+        self.cart = {}  # Также очищаем локальную копию корзины

@@ -26,34 +26,35 @@
                                     {% endif %}
                                     <div>
                                         <h6 class="mb-1">{{ item.name }}</h6>
-                                        <small class="text-muted">Арт: {{ item.product.id }}</small>
+                                        <small class="text-muted">Арт: {{ item.product_id }}</small>
                                     </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="d-flex justify-content-center">
-                                    <form action="{% url 'cart_add' item.product.id %}" method="post" class="d-flex align-items-center">
+                                    <form action="{% url 'cart_add' item.product_id %}" method="post" class="d-flex align-items-center">
                                         {% csrf_token %}
                                         <div class="input-group" style="width: 140px;">
                                             <button type="button" class="btn btn-outline-secondary btn-sm quantity-minus" 
-        data-product-id="{{ item.product.id }}">
+        data-product-id="{{ item.product_id }}">
     <i class="fas fa-minus"></i>
 </button>
 <input type="number" name="quantity" value="{{ item.quantity }}" 
-       min="1" max="{{ item.product.stock }}" 
+       min="1" max="1000" 
        class="form-control form-control-sm text-center quantity-input">
 <button type="button" class="btn btn-outline-secondary btn-sm quantity-plus" 
-        data-product-id="{{ item.product.id }}">
+        data-product-id="{{ item.product_id }}">
     <i class="fas fa-plus"></i>
 </button>
                                         </div>
                                     </form>
                                 </div>
-                            </td>
-                            <td class="text-end">{{ item.price }} сом</td>
-                            <td class="text-end">{{ item.total_price }} сом</td>
+                            </td >
+                            
+                            <td class="text-end" data-item-price="{{ item.price }}">{{ item.price }} сом</td>
+                            <td class="text-end" data-item-total >{{ item.total_price }} сом</td>
                             <td class="text-center">
-                                <a href="{% url 'cart_remove2' item.product.id %}" class="btn btn-sm btn-outline-danger">
+                                <a href="{% url 'cart_remove2' item.product_id %}" class="btn btn-sm btn-outline-danger">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
                             </td>
@@ -63,7 +64,7 @@
                 <tfoot class="table-group-divider">
                     <tr>
                         <th colspan="3" class="text-end">Итого:</th>
-                        <th colspan="2" class="text-end">{{ cart.get_total_price }} сом</th>
+                        <th colspan="2" class="text-end cart-total-price">{{ cart.get_total_price }} сом</th>
                     </tr>
                 </tfoot>
             </table>
@@ -93,8 +94,8 @@
         // Обработчики для кнопок +/-
         document.querySelectorAll('.quantity-minus').forEach(button => {
             button.addEventListener('click', function() {
-                const productId = this.getAttribute('data-product-id');
-                const input = this.nextElementSibling;
+                const productId = this.dataset.productId;
+                const input = this.parentNode.querySelector('.quantity-input');
                 let quantity = parseInt(input.value);
                 
                 if (quantity > 1) {
@@ -109,53 +110,80 @@
     
         document.querySelectorAll('.quantity-plus').forEach(button => {
             button.addEventListener('click', function() {
-                const productId = this.getAttribute('data-product-id');
-                const input = this.previousElementSibling;
-                const max = parseInt(input.getAttribute('max'));
+                const productId = this.dataset.productId;
+                const input = this.parentNode.querySelector('.quantity-input');
                 let quantity = parseInt(input.value);
                 
-                
-                    input.value = quantity + 1;
-                    updateCart(productId, input.value);
-               
+                input.value = quantity + 1;
+                updateCart(productId, input.value);
             });
         });
     
         // Функция обновления корзины через AJAX
         function updateCart(productId, quantity) {
+            const formData = new URLSearchParams();
+            formData.append('quantity', quantity);
+            formData.append('update_quantity', 'true');
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        
             fetch(`/cart/add/${productId}/`, {
                 method: 'POST',
+                body: formData,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRFToken': '{{ csrf_token }}',
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `quantity=${quantity}&update_quantity=True`
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw err; });
+                }
+                return response.json();
+            })
             .then(data => {
-                // Обновляем итоговые значения на странице
-                document.querySelectorAll('.cart-count').forEach(el => {
-                    el.textContent = data.total_items || 0;
-                });
-                document.querySelectorAll('.cart-total-price').forEach(el => {
-                    el.textContent = data.total_price + ' сом';
-                });
-                // Обновляем строку с товаром
-                location.reload(); // или можно сделать более точное обновление
+                if (data.status === 'success') {
+                    // Обновляем общее количество товаров
+                    document.querySelectorAll('.cart-count').forEach(el => {
+                        el.textContent = data.total_items;
+                    });
+                    
+                    // Обновляем общую сумму
+                    document.querySelectorAll('.cart-total-price').forEach(el => {
+                        el.textContent = data.total_price + ' сом';
+                    });
+                    
+                    // Обновляем сумму для конкретного товара
+                    const row = document.querySelector(`button[data-product-id="${productId}"]`).closest('tr');
+                    if (row) {
+                        const price = parseFloat(row.querySelector('[data-item-price]').textContent);
+                        const newTotal = price * quantity;
+                        row.querySelector('[data-item-total]').textContent = newTotal.toFixed(2) + ' сом';
+                        
+                        // Обновляем значение в input на случай, если сервер скорректировал количество
+                        const input = row.querySelector('.quantity-input');
+                        input.value = quantity;
+                    }
+                } else {
+                    throw new Error(data.message || 'Unknown error');
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
+                alert('Ошибка: ' + (error.message || 'Не удалось обновить корзину'));
+                // Восстанавливаем предыдущее значение
+                const input = document.querySelector(`button[data-product-id="${productId}"]`).parentNode.querySelector('.quantity-input');
+                input.value = parseInt(input.value) - 1;
             });
         }
-    
+
         // Функция удаления товара
         function removeFromCart(productId) {
+            const formData = new FormData();
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    
             fetch(`/cart/remove/${productId}/`, {
                 method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                }
+                body: formData,
             })
             .then(response => {
                 if (response.ok) {
@@ -164,10 +192,11 @@
             })
             .catch(error => {
                 console.error('Error:', error);
+                alert('Произошла ошибка при удалении товара');
             });
         }
     });
-</script>
+    </script>
 
 <style>
     @media (max-width: 767.98px) {
