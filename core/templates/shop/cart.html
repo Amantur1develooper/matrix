@@ -4,7 +4,7 @@
 <div class="container py-4">
     <h2 class="mb-4">Ваша корзина</h2>
     
-    {% if cart %}
+    {% if cart and cart|length > 0 %}
         <div class="table-responsive">
             <table class="table">
                 <thead class="table-light">
@@ -18,43 +18,46 @@
                 </thead>
                 <tbody>
                     {% for item in cart %}
-                        <tr>
+                        <tr data-product-id="{{ item.product.id }}">
                             <td>
                                 <div class="d-flex align-items-center">
-                                    {% if item.image %}
-                                        <img src="{{ item.image }}" style="width: 60px; height: 60px; object-fit: contain;" class="me-3 rounded">
+                                    {% if item.product.images.first %}
+                                        <img src="{{ item.product.images.first.image.url }}" style="width: 60px; height: 60px; object-fit: contain;" class="me-3 rounded">
                                     {% endif %}
                                     <div>
-                                        <h6 class="mb-1">{{ item.name }}</h6>
-                                        <small class="text-muted">Арт: {{ item.product_id }}</small>
+                                        <h6 class="mb-1">{{ item.product.name }}</h6>
+                                        <small class="text-muted">Арт: {{ item.product.id }}</small>
                                     </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="d-flex justify-content-center">
-                                    <form action="{% url 'cart_add' item.product_id|default:'0' %}" method="post" class="d-flex align-items-center">
+                                    <form action="{% url 'cart_add' item.product.id %}" method="post" class="d-flex align-items-center">
                                         {% csrf_token %}
                                         <div class="input-group" style="width: 140px;">
                                             <button type="button" class="btn btn-outline-secondary btn-sm quantity-minus" 
-        data-product-id="{{ item.product_id }}">
-    <i class="fas fa-minus"></i>
-</button>
-<input type="number" name="quantity" value="{{ item.quantity }}" 
-       min="1" max="1000" 
-       class="form-control form-control-sm text-center quantity-input">
-<button type="button" class="btn btn-outline-secondary btn-sm quantity-plus" 
-        data-product-id="{{ item.product_id }}">
-    <i class="fas fa-plus"></i>
-</button>
+                                                data-product-id="{{ item.product.id }}">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                            <input type="number" name="quantity" value="{{ item.quantity }}" 
+                                                   min="1" max="1000" 
+                                                   class="form-control form-control-sm text-center quantity-input">
+                                            <button type="button" class="btn btn-outline-secondary btn-sm quantity-plus" 
+                                                data-product-id="{{ item.product.id }}">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
                                         </div>
                                     </form>
                                 </div>
-                            </td >
-                            
-                            <td class="text-end" data-item-price="{{ item.price }}">{{ item.price }} сом</td>
-                            <td class="text-end" data-item-total >{{ item.total_price }} сом</td>
+                            </td>
+                            <td class="text-end" data-item-price="{{ item.price }}">
+                                {{ item.price }} сом
+                            </td>
+                            <td class="text-end" data-item-total>
+                                {{ item.total_price }} сом
+                            </td>
                             <td class="text-center">
-                                <a href="{% url 'cart_remove2' item.product_id %}" class="btn btn-sm btn-outline-danger">
+                                <a href="{% url 'cart_remove' item.product.id %}" class="btn btn-sm btn-outline-danger">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
                             </td>
@@ -64,7 +67,9 @@
                 <tfoot class="table-group-divider">
                     <tr>
                         <th colspan="3" class="text-end">Итого:</th>
-                        <th colspan="2" class="text-end cart-total-price">{{ cart.get_total_price }} сом</th>
+                        <th colspan="2" class="text-end cart-total-price">
+                            {{ cart.get_total_price }} сом
+                        </th>
                     </tr>
                 </tfoot>
             </table>
@@ -79,7 +84,7 @@
             </a>
         </div>
     {% else %}
-        <div  style="margin-bottom: 300px;" class="alert alert-info d-flex align-items-center">
+        <div style="margin-bottom: 300px;" class="alert alert-info d-flex align-items-center">
             <i class="fas fa-shopping-cart me-3 fa-lg"></i>
             <div>
                 <h5 class="alert-heading">Ваша корзина пуста</h5>
@@ -91,6 +96,13 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Общая функция для обновления количества
+        function handleQuantityChange(productId, newQuantity) {
+            const input = document.querySelector(`button[data-product-id="${productId}"]`).parentNode.querySelector('.quantity-input');
+            input.value = newQuantity;
+            updateCart(productId, newQuantity);
+        }
+    
         // Обработчики для кнопок +/-
         document.querySelectorAll('.quantity-minus').forEach(button => {
             button.addEventListener('click', function() {
@@ -99,11 +111,11 @@
                 let quantity = parseInt(input.value);
                 
                 if (quantity > 1) {
-                    input.value = quantity - 1;
-                    updateCart(productId, input.value);
+                    handleQuantityChange(productId, quantity - 1);
                 } else {
-                    // Если количество становится 0, удаляем товар
-                    removeFromCart(productId);
+                    if (confirm('Удалить товар из корзины?')) {
+                        removeFromCart(productId);
+                    }
                 }
             });
         });
@@ -113,9 +125,25 @@
                 const productId = this.dataset.productId;
                 const input = this.parentNode.querySelector('.quantity-input');
                 let quantity = parseInt(input.value);
+                const max = parseInt(input.getAttribute('max')) || 1000;
                 
-                input.value = quantity + 1;
-                updateCart(productId, input.value);
+                handleQuantityChange(productId, Math.min(quantity + 1, max));
+            });
+        });
+    
+        // Обработчик изменения значения вручную
+        document.querySelectorAll('.quantity-input').forEach(input => {
+            input.addEventListener('change', function() {
+                const productId = this.closest('form').querySelector('button').dataset.productId;
+                let quantity = parseInt(this.value);
+                const max = parseInt(this.getAttribute('max')) || 1000;
+                
+                if (isNaN(quantity)) {
+                    quantity = 1;
+                }
+                quantity = Math.max(1, Math.min(quantity, max));
+                
+                handleQuantityChange(productId, quantity);
             });
         });
     
@@ -131,38 +159,17 @@
                 body: formData,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
             })
             .then(response => {
                 if (!response.ok) {
-                    return response.json().then(err => { throw err; });
+                    throw new Error('Network response was not ok');
                 }
                 return response.json();
             })
             .then(data => {
                 if (data.status === 'success') {
-                    // Обновляем общее количество товаров
-                    document.querySelectorAll('.cart-count').forEach(el => {
-                        el.textContent = data.total_items;
-                    });
-                    
-                    // Обновляем общую сумму
-                    document.querySelectorAll('.cart-total-price').forEach(el => {
-                        el.textContent = data.total_price + ' сом';
-                    });
-                    
-                    // Обновляем сумму для конкретного товара
-                    const row = document.querySelector(`button[data-product-id="${productId}"]`).closest('tr');
-                    if (row) {
-                        const price = parseFloat(row.querySelector('[data-item-price]').textContent);
-                        const newTotal = price * quantity;
-                        row.querySelector('[data-item-total]').textContent = newTotal.toFixed(2) + ' сом';
-                        
-                        // Обновляем значение в input на случай, если сервер скорректировал количество
-                        const input = row.querySelector('.quantity-input');
-                        input.value = quantity;
-                    }
+                    updateCartUI(data);
                 } else {
                     throw new Error(data.message || 'Unknown error');
                 }
@@ -170,33 +177,78 @@
             .catch(error => {
                 console.error('Error:', error);
                 alert('Ошибка: ' + (error.message || 'Не удалось обновить корзину'));
-                // Восстанавливаем предыдущее значение
-                const input = document.querySelector(`button[data-product-id="${productId}"]`).parentNode.querySelector('.quantity-input');
-                input.value = parseInt(input.value) - 1;
+                location.reload();
             });
         }
-
+    
+        // Функция обновления интерфейса
+        function updateCartUI(data) {
+            // Обновляем общую сумму
+            if (data.total_price) {
+                document.querySelectorAll('.cart-total-price').forEach(el => {
+                    el.textContent = data.total_price + ' сом';
+                });
+            }
+            
+            // Обновляем строку товара
+            if (data.product_id) {
+                const row = document.querySelector(`tr[data-product-id="${data.product_id}"]`);
+                if (row) {
+                    const price = parseFloat(row.querySelector('[data-item-price]').textContent);
+                    const quantity = parseInt(row.querySelector('.quantity-input').value);
+                    const newTotal = price * quantity;
+                    row.querySelector('[data-item-total]').textContent = newTotal.toFixed(2) + ' сом';
+                }
+            }
+        }
+    
         // Функция удаления товара
         function removeFromCart(productId) {
-            const formData = new FormData();
-            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-    
             fetch(`/cart/remove/${productId}/`, {
                 method: 'POST',
-                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                })
             })
             .then(response => {
-                if (response.ok) {
-                    location.reload();
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+                    if (row) row.remove();
+                    
+                    // Обновляем итоговую сумму
+                    if (data.total_price) {
+                        document.querySelectorAll('.cart-total-price').forEach(el => {
+                            el.textContent = data.total_price + ' сом';
+                        });
+                    }
+                    
+                    // Если корзина пуста, показываем сообщение
+                    if (data.total_items === 0) {
+                        location.reload();
+                    }
+                } else {
+                    throw new Error(data.message || 'Ошибка при удалении');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Произошла ошибка при удалении товара');
+                alert(error.message);
             });
         }
     });
-    </script>
+</script>
+
+
 
 <style>
     @media (max-width: 767.98px) {

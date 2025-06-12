@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from .models import KaruselImage, Letter, Product, Category, ProductImage, Order, OrderItem
+from .models import KaruselImage, Letter, Product, Category, ProductImage, Order, OrderItem, TelegramUser
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib import admin
@@ -21,7 +21,7 @@ from .models import ProductSpecification, ProductSpecificationValue
 admin.site.site_header = "Админ-панель"
 admin.site.register(EmailRecipient)
 admin.site.register(KaruselImage)
-
+admin.site.register(TelegramUser)
 
     
     

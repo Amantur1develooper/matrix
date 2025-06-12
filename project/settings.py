@@ -124,6 +124,12 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # где лежат твои исходные файлы
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')   
 
+# Сессия истекает через 30 минут (в секундах)
+SESSION_COOKIE_AGE = 30 * 60  # 1800 секунд
+
+# Сессия удаляется при закрытии браузера
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

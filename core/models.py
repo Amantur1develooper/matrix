@@ -168,3 +168,36 @@ class Letter(models.Model):
     
     def __str__(self):
         return f"{self.name}: {self.pochta}"
+    
+
+class Cart(models.Model):
+    session_key = models.CharField(max_length=40, db_index=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Корзина {self.session_key}"
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.product.name} x {self.quantity}"
+
+    def get_total_price(self):
+        price = self.product.skidka_price if self.product.skidka_price else self.product.price
+        return price * self.quantity
+
+
+# models.py
+from django.db import models
+
+class TelegramUser(models.Model):
+    chat_id = models.CharField(max_length=100, unique=True)
+    first_name = models.CharField(max_length=100, blank=True)
+    username = models.CharField(max_length=100, blank=True)
+    
+    def __str__(self):
+        return self.username or self.first_name or self.chat_id
