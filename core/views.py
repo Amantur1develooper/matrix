@@ -43,8 +43,6 @@ def send_email_task(subject, message, recipient_list):
 from django.db.models import Q
 
 def dostavka_oplata(request):
-    cart = Cart(request)
-    cart.clear()
     return render(request, 'dostavka_oplata.html',{"categories": categories,})
 
 def warranty(request):
