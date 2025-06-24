@@ -106,14 +106,14 @@ ENV/
 env.bak/ 
 venv.bak/ 
 
-# mkdocs documentation 
-/site 
-
-# mypy 
-.mypy_cache/ 
-
-# Sublime Text # 
-*.tmlanguage.cache 
+# mkdocsAWEWOR[PWORP[O[RO[W[WR[OWE[ROLDKSFJGL]]]]]]] documentation 
+/site DW
+ADAWDADAW
+# mypy D
+.AWDJDKLAJSKLDJKAJSDLKASDmypy_cache/ 
+DW
+# Sublime Text # AD
+*.tmlanguage.caAWcAWDhe 
 *.tmPreferences.cache 
 *.stTheme.cache 
 *.sublime-workspace 
@@ -121,7 +121,6 @@ venv.bak/
 
 # sftp configuration file 
 sftp-config.json 
-
 # Package control specific files Package 
 Control.last-run 
 Control.ca-list 

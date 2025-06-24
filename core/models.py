@@ -16,6 +16,7 @@ class Category(models.Model):
     )
     slug = models.SlugField(unique=True)
     
+    
     def get_descendants(self, include_self=False):
         descendants = []
         if include_self:
@@ -24,10 +25,16 @@ class Category(models.Model):
             descendants += child.get_descendants(include_self=True)
         return descendants
     
+    
     def get_absolute_url(self):
         return reverse('category', kwargs={'slug': self.slug})
+    
+    
     class Meta:
-        verbose_name_plural = "Categories"
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
+        
+        
     def __str__(self):
         return f"{self.name}"
 
@@ -51,6 +58,10 @@ class Product(models.Model):
    
     def get_absolute_url(self):
         return reverse('product_detail', kwargs={'slug': self.slug})
+    
+    class Meta:
+        verbose_name = "Продукт"
+        verbose_name_plural = "Продукты"
     
     
 class ProductSpecification(models.Model):
@@ -100,6 +111,9 @@ class ProductImage(models.Model):
     image = models.ImageField(upload_to='products/')
     is_main = models.BooleanField(default=False)  # Добавьте это поле
 
+    class Meta:
+        verbose_name = "Изображение продукта"
+        verbose_name_plural = "Изображении продуктов"
 class Order(models.Model):
     STATUS_CHOICES = [
         ('new', 'Новый'),
@@ -141,6 +155,10 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"Заказ #{self.product} - {self.order}"
     
+    class Meta:
+        verbose_name = "Элементы заказа"
+        verbose_name_plural = "Элементы заказов"
+        
     
 class KaruselImage(models.Model):
     title = models.CharField(max_length=20,)
@@ -150,7 +168,10 @@ class KaruselImage(models.Model):
     
     def __str__(self):
         return f"Картинка #{self.id} - {self.title}"
-
+    
+    class Meta:
+        verbose_name = "Фотка Карусели"
+        verbose_name_plural = "Фотки Карусели"
 
 # core/models.py
 class EmailRecipient(models.Model):
@@ -159,6 +180,10 @@ class EmailRecipient(models.Model):
 
     def __str__(self):
         return f"{self.purpose}: {self.email}"
+    
+    class Meta:
+        verbose_name = "Gmail Рассылка"
+        verbose_name_plural = "Gmail Рассылки"
 
 class Letter(models.Model):
     name = models.CharField(max_length=100,verbose_name='фио')
@@ -169,6 +194,9 @@ class Letter(models.Model):
     def __str__(self):
         return f"{self.name}: {self.pochta}"
     
+    class Meta:
+        verbose_name = "Письмо Менеджеру"
+        verbose_name_plural = "Письма Менеджерам"
 
 class Cart(models.Model):
     session_key = models.CharField(max_length=40, db_index=True)
@@ -176,6 +204,7 @@ class Cart(models.Model):
 
     def __str__(self):
         return f"Корзина {self.session_key}"
+    
 
 
 class CartItem(models.Model):
@@ -201,3 +230,8 @@ class TelegramUser(models.Model):
     
     def __str__(self):
         return self.username or self.first_name or self.chat_id
+    
+    class Meta:
+        verbose_name = "Телеграм пользовател"
+        verbose_name_plural = "Телеграм пользователи"
+        
