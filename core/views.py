@@ -597,6 +597,7 @@ def checkout(request):
     return render(request, 'shop/checkout.html', {
         'cart': cart,
         'form': form,
+        'categories': categories
     })
 
 # def checkout(request):

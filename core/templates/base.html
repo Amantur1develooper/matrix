@@ -376,12 +376,14 @@
             </div>
             <div>
                 <div class="small">
-                    <div><i class="fas fa-phone-alt me-1"></i> +996 (559) 99-79-11</div>
-                    <div><i class="fas fa-phone-alt me-1"></i> +996 (779) 44-97-90 </div>
-                    <div><i class="fas fa-phone-alt me-1"></i> +996 (990) 00-01-51 </div>
+                    <div><i class="fas fa-phone-alt me-1"></i> +996 (990) 00-01-51 - Основной номер</div>
+                    <div><i class="fas fa-phone-alt me-1"></i> +996 (772) 527 677 - Консультации по товарам</div>
+                    <div><i class="fas fa-phone-alt me-1"></i> +996 (779) 44-97-90 - Технический отдел (компьютеры)</div>
+                    <div><i class="fas fa-phone-alt me-1"></i> +996 (559) 99-79-11 - Технический отдел (принтеры)</div>
                 </div>
             </div>
         </div>
+         
                  <!-- Бургер-кнопка для мобильных -->
         
        
@@ -580,7 +582,7 @@
     </div>
     
     <!-- Футер -->
-    <footer class=" text-white mt-5 py-4">
+    {% comment %} <footer class=" text-white mt-5 py-4">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
@@ -597,8 +599,74 @@
                 </div>
             </div>
         </div>
+    </footer> {% endcomment %}
+    <footer class="text-white mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Контакты</h5>
+                    <p><i class="fas fa-phone-alt me-2"></i> +996 (990) 00-01-51 - Основной номер</p>
+                    <p><i class="fas fa-phone-alt me-2"></i> +996 (772) 527 677 - Консультации по товарам</p>
+                    <p><i class="fas fa-phone-alt me-2"></i> +996 (779) 44-97-90 - Технический отдел (компьютеры)</p>
+                    <p><i class="fas fa-phone-alt me-2"></i> +996 (559) 99-79-11 - Технический отдел (принтеры)</p>
+             
+                    <p><a href="mailto:mtxkgz@gmail.com" target="_blank" style="text-decoration: none;color:#ddd">
+                        <i class="fas fa-envelope"></i> mtxkgz@gmail.com
+                    </a></p>
+                    
+                </div>
+                
+                <div class="col-md-4">
+                    <h5>Как нас найти</h5>
+                    <div class="map-links">
+                        <a href="https://2gis.kg/bishkek/geo/70000001031086370" target="_blank" class="text-white d-block mb-2">
+                            <i class="fas fa-map-marked-alt me-2"></i> 2GIS
+                        </a>
+                        <a href="https://maps.app.goo.gl/wKyfTiigKn2FNf2v5?g_st=awb" target="_blank" class="text-white d-block">
+                            <i class="fas fa-map-marker-alt me-2"></i> Google Maps
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h5>Режим работы</h5>
+                        <p><i class="far fa-clock me-2"></i> ПН-ПТ: 09:00 - 18:00</p>
+                        <p><i class="far fa-clock me-2"></i> СБ: 09:00 - 16:00</p>
+                        <p><i class="far fa-clock me-2"></i> ВС: выходной</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <h5>Политика конфиденциальности</h5>
+                    <p>© 2025 Matrix. Все права защищены.</p>
+                    
+                    <div class="mt-4">
+                        <h5>Быстрые ссылки</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="{% url 'about_us' %}" class="text-white">О нас</a></li>
+                            <li><a href="{% url 'dostavka_oplata' %}" class="text-white">Доставка и оплата</a></li>
+                            <li><a href="{% url 'warranty' %}" class="text-white">Гарантия</a></li>
+                            <li><a href="{% url 'contacts' %}" class="text-white">Контакты</a></li>
+                        </ul>
+                        <div class="mt-3">
+                            <h5>Мы в соцсетях</h5>
+                            <div class="social-links">
+                                <a href="https://t.me/mtx_kg" target="_blank" class="text-white me-3">
+                                    <i class="fab fa-telegram fa-lg"></i>
+                                </a>
+                                <a href="https://www.instagram.com/mtx.kg" target="_blank" class="text-white me-3">
+                                    <i class="fab fa-instagram fa-lg"></i>
+                                </a>
+                                <a href="https://www.facebook.com/share/1ABTGuwTeh/" target="_blank" class="text-white">
+                                    <i class="fab fa-facebook fa-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </footer>
-    
+
     <!-- Фиксированная кнопка контактов -->
     <div class="fixed-contact-btn">
         <button class="btn btn-primary rounded-circle contact-btn" id="contactButton">
