@@ -549,7 +549,7 @@ from .models import Category  # если используешь категори
 
 def checkout(request):
     cart = CartDB(request)
-    
+    # categories = Category.objects.all()
     if request.method == 'POST':
         form = OrderCreateForm(request.POST)
         if form.is_valid() and len(cart) > 0:
@@ -597,7 +597,7 @@ def checkout(request):
     return render(request, 'shop/checkout.html', {
         'cart': cart,
         'form': form,
-        'categories': categories
+        # 'categories': categories
     })
 
 # def checkout(request):
