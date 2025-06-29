@@ -109,7 +109,7 @@ def home(request):
     categories = Category.objects.filter(parent__isnull=True)
     karusel = KaruselImage.objects.all()
     top_products = Product.objects.filter(is_top=True)[:4]
-    products = Product.objects.all()
+    products = Product.objects.all().filter(is_top=False)
     
     context = {
         'category_none':True,
