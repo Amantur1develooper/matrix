@@ -74,6 +74,8 @@ def main_sevice(request):
 def about_us(request):
     return render(request, 'about_us.html',{"categories": categories,})
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import random
 
 def home(request):
     query = request.GET.get('q', '')
@@ -109,19 +111,82 @@ def home(request):
     categories = Category.objects.filter(parent__isnull=True)
     karusel = KaruselImage.objects.all()
     top_products = Product.objects.filter(is_top=True)[:4]
-    products = Product.objects.all().filter(is_top=False)
+    
+    # Получаем все товары (кроме топовых) в случайном порядке
+    products = list(Product.objects.filter(is_top=False))
+    random.shuffle(products)
+    
+    # Пагинация
+    paginator = Paginator(products, 18)  # Показывать 12 товаров на странице
+    page = request.GET.get('page')
+    
+    try:
+        products_paginated = paginator.page(page)
+    except PageNotAnInteger:
+        # Если страница не является целым числом, показываем первую страницу
+        products_paginated = paginator.page(1)
+    except EmptyPage:
+        # Если страница вне диапазона (например, 9999), показываем последнюю страницу
+        products_paginated = paginator.page(paginator.num_pages)
     
     context = {
-        'category_none':True,
+        'category_none': True,
         "categories": categories,
         'karusel': karusel,
         'search_results': search_results,
         'search_query': query,
         'top_products': top_products,
-        'products':products
+        'products': products_paginated  # Используем пагинированный список
     }
     
     return render(request, "home.html", context)
+# def home(request):
+#     query = request.GET.get('q', '')
+#     search_results = []
+    
+#     # Поиск с подсказками (AJAX запрос)
+#     if query and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+#         # Ищем товары, где название начинается с запроса (более релевантные)
+#         starts_with = Product.objects.filter(
+#             Q(name__istartswith=query)
+#         ).prefetch_related('images').distinct()[:5]
+        
+#         # Если мало результатов, ищем товары, содержащие запрос
+#         contains = []
+#         if starts_with.count() < 5:
+#             contains = Product.objects.filter(
+#                 Q(name__icontains=query) & ~Q(name__istartswith=query)
+#             ).prefetch_related('images').distinct()[:5 - starts_with.count()]
+        
+#         search_results = list(starts_with) + list(contains)
+#         return render(request, 'shop/includes/search_suggestions.html', {
+#             'search_results': search_results,
+#             'search_query': query
+#         })
+    
+#     # Обычный поиск при нажатии Enter/поиске
+#     if query:
+#         search_results = Product.objects.filter(
+#             Q(name__icontains=query) | 
+#             Q(description__icontains=query)
+#         ).prefetch_related('images').distinct()
+    
+#     categories = Category.objects.filter(parent__isnull=True)
+#     karusel = KaruselImage.objects.all()
+#     top_products = Product.objects.filter(is_top=True)[:4]
+#     products = Product.objects.all().filter(is_top=False)
+    
+#     context = {
+#         'category_none':True,
+#         "categories": categories,
+#         'karusel': karusel,
+#         'search_results': search_results,
+#         'search_query': query,
+#         'top_products': top_products,
+#         'products':products
+#     }
+    
+#     return render(request, "home.html", context)
 
 
 def sales_view(request):
