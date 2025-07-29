@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-4kjpdeec9i-er9y2122by@!x0@(_x8*5yvzw^x#ewtca404_ne
 DEBUG = True
 
 # ALLOWED_HOSTS = ['mtx.kg','www.mtx.kg',"*"]
-ALLOWED_HOSTS = ['mtx.kg','www.mtx.kg',]
+ALLOWED_HOSTS = ['*','mtx.kg','www.mtx.kg',]
 
 CSRF_TRUSTED_ORIGINS = ['mtx.kg','www.mtx.kg']
 # Application definition
@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core'
+    'core',
+    'django.contrib.sitemaps',
+    # 'rollyourown.seo',
+    'django.contrib.sites',
 ]
 
 MIDDLEWARE = [

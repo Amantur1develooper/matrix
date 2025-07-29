@@ -14,12 +14,44 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.views.generic import TemplateView
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,re_path
 from django.conf import settings 
 from django.conf.urls.static import static
 from core.views import contacts,cart_remove2, about_us, install_settings, main_sevice, org_obsluj, remonorg, remontpk, sales_view, warranty,dostavka_oplata, home,category_view,test_email, product_detail,checkout,cart_detail,cart_add,cart_remove
+from django.contrib.sitemaps.views import sitemap
+from .sitemaps import StaticViewSitemap
+from django.contrib.sitemaps import Sitemap
+from django.urls import reverse
 
+# class StaticViewSitemap(Sitemap):
+#     def items(self):
+#         return [
+#             'home',
+#             'contacts',
+#             'dostavka_oplata',
+#             'warranty',
+#             'about_us',
+#             'main_sevice',
+#             'sales',
+#             'remontpk',
+#             'remonorg',
+#             'install_settings',
+#             'org_obsluj',
+#             'checkout',
+#             'cart_detail',
+#         ] # или свои URL name
+
+#     def location(self, item):
+#         return reverse(item)
+
+# from rollyourown.seo.admin import register_seo_admin
+from django.contrib import admin
+# from .seo import MyMetadata
+
+# register_seo_admin(admin.site, MyMetadata)
+sitemaps = {'static': StaticViewSitemap}
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,6 +66,11 @@ urlpatterns = [
     path('about_us/',about_us ,name='about_us'),
     path('main_sevice/',main_sevice,name='main_sevice'),
     path('sales/', sales_view, name='sales'),
+    
+    re_path(r'^robots\.txt$', TemplateView.as_view(template_name="robots.txt", content_type='text/plain')),
+    re_path(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+
+
     
     path('remontpk/', remontpk, name='remontpk'),
     path('remonorg/',remonorg,name='remonorg'),

@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://mtx.kg/sitemap.xml
