@@ -28,7 +28,7 @@ DEBUG = True
 # ALLOWED_HOSTS = ['mtx.kg','www.mtx.kg',"*"]
 ALLOWED_HOSTS = ['*','mtx.kg','www.mtx.kg',]
 
-CSRF_TRUSTED_ORIGINS = ['mtx.kg','www.mtx.kg']
+CSRF_TRUSTED_ORIGINS = ['https://mtx.kg', 'https://www.mtx.kg']
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,9 +41,11 @@ INSTALLED_APPS = [
     'core',
     'django.contrib.sitemaps',
     # 'rollyourown.seo',
+
     'django.contrib.sites',
 ]
 
+SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
