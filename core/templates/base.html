@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Магазин электроники Matrix{% endblock %}</title>
+    <title>{% block title %}Магазин электроники Matrix {% endblock %}</title>
     <meta property="og:title" content="Matrix" />
     <meta property="og:description" content="Продажа электроники, оргтехники и комплектующих: ноутбуки, ПК, картриджи, принтеры, сканеры, расходные материалы. Гарантия, обслуживание и индивидуальный подход к каждому клиенту" />
     <meta property="og:image" content="{% static '/imgg/logo3.png' %}" />
@@ -383,9 +383,10 @@
             <div>
                 <div class="small">
                     <div><i class="fas fa-phone-alt me-1"></i> +996 (990) 00-01-51 - Основной номер</div>
-                    <div><i class="fas fa-phone-alt me-1"></i> +996 (772) 527 677 - Консультации по товарам</div>
-                    <div><i class="fas fa-phone-alt me-1"></i> +996 (779) 44-97-90 - Технический отдел (компьютеры)</div>
-                    <div><i class="fas fa-phone-alt me-1"></i> +996 (559) 99-79-11 - Технический отдел (принтеры)</div>
+                    <div><i class="fas fa-phone-alt me-1"></i> +996 (772) 52-76-77 - Консультации по товарам</div>
+                    <div><i class="fas fa-phone-alt me-1"></i> +996 (772) 54-53-55 - Менеджер</div>
+                    {% comment %} <div><i class="fas fa-phone-alt me-1"></i> +996 (779) 44-97-90 - Технический отдел (компьютеры)</div> {% endcomment %}
+                    {% comment %} <div><i class="fas fa-phone-alt me-1"></i> +996 (559) 99-79-11 - Технический отдел (принтеры)</div> {% endcomment %}
                 </div>
             </div>
         </div>
@@ -688,15 +689,19 @@
                 <a href="tel:+996772527677" target="_blank" class="contact-item">
                     <i class="fas fa-phone"></i> +996 (772) 527 677
                 </a>
-                <a href="tel:+996559997911" target="_blank" class="contact-item">
+                {% comment %} <a href="tel:+996559997911" target="_blank" class="contact-item">
                     <i class="fas fa-phone"></i> +996 (559) 997 911
                 </a>
                 <a href="tel:+996779449790" target="_blank" class="contact-item">
                     <i class="fas fa-phone"></i> +996 (779) 449 790
-                </a>
+                </a> {% endcomment %}
                 <a href="tel:++996990000151" target="_blank" class="contact-item">
                     <i class="fas fa-phone"></i> +996 (990) 000 151
                 </a>
+                  <a href="tel:++996772545355" target="_blank" class="contact-item">
+                    <i class="fas fa-phone"></i> +996 (772) 545 355
+                </a>
+             
                 <a href="https://t.me/mtx_kg" target="_blank" class="contact-item">
                     <i class="fab fa-telegram"></i> Telegram
                 </a>
