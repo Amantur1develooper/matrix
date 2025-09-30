@@ -484,7 +484,7 @@
                 <div class="col">
                     <div class="card h-100 product-card">
                         {% with product.images.all|first as main_image %}
-                        <a href="{{ product.get_absolute_url }}" class="text-decoration-none">
+                        <a href="{{ product.get_absolute_url }}" onclick="return gtag_report_conversion('{{ product.get_absolute_url }}')"  class="text-decoration-none">
                             <div class="card-img-container">
                                 {% if main_image %}
                                 <img src="{{ main_image.image.url }}" class="card-img-top" alt="{{ product.name }}">
@@ -504,7 +504,7 @@
                         {% endwith %}
                         <div class="card-body">
                             <h5 class="card-title">
-                                <a href="{{ product.get_absolute_url }}" class="text-decoration-none text-dark">
+                                <a href="{{ product.get_absolute_url }}" onclick="return gtag_report_conversion('{{ product.get_absolute_url }}')" class="text-decoration-none text-dark">
                                     {{ product.name }}
                                 </a>
                             </h5>
